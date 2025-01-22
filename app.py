@@ -170,6 +170,9 @@ async def test():
    pid = {"kp": 1, "ki": 0, "kd": 0}
    await ilan.drive_straight(52,300, **pid)
 
+async def test8():
+   pid = {"kp": 1, "ki": 0, "kd": 0}
+   await ilan.drive_straight(52,300, **pid)
 
 
 # this is the main program
