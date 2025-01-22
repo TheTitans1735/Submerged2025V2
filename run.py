@@ -6,7 +6,7 @@ from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
 from robot import Robot
 # from pynput import keyboard
-
+# for gebetta
 ilan=Robot()
 # # Port A - Right color sensor
 # # Port B - Right wheel
