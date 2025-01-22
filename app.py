@@ -37,7 +37,7 @@ async def turn_right():
     await ilan.drive_base.turn(360, wait=False)
 
 async def front_motor():
-    ilan.motor_front.dc(300)
+    ilan.motor_front.dc(50)
 
 async def back_motor():
     ilan.motor_back.dc(500)
