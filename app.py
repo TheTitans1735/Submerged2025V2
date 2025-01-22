@@ -7,6 +7,7 @@ from pybricks.parameters import Icon, Color, Button, Direction
 from robot import Robot
 # from pynput import keyboard
 # for ilan
+# check change 
 # change 4
 ilan=Robot()
 # # Port A - Right color sensor
@@ -148,7 +149,7 @@ async def massive():
     await ilan.wait_for_button()
     await ilan.motor_front.run_angle(200,-400)
     await ilan.wait_for_button()
-    await ilan.turn(10,200)
+    #await ilan.turn(10,200)
     await ilan.wait_for_button()
     await ilan.motor_front.run_angle(200,5)
     await ilan.wait_for_button()
