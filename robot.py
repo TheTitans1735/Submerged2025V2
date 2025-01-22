@@ -97,9 +97,6 @@ class Robot:
         """
         self.motor_back.reset_angle(0)
         await self.motor_back.run_target(speed, angle, then=Stop.HOLD, wait=wait)
-
-
-
     
 
     async def wait_for_button(self,debug = True):
