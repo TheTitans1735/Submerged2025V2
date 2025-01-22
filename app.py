@@ -137,7 +137,7 @@ async def crabs():
 
 
 async def massive():
-    pid = {"kp": 1, "ki": 0, "kd": 0}
+    pid = {"kp": 1, "ki": 0, "kd": 0.0}
     await ilan.drive_straight(52,300, **pid)
     await ilan.run_back_motor(200,160)
     await ilan.turn(-4,200)
@@ -162,6 +162,7 @@ async def massive():
     await ilan.turn(30)
     await ilan.wait_for_button()
     await ilan.drive_straight(-60,500, **pid)
+    await ilan.wait_for_button(debug= False)
 
 
 async def test():
