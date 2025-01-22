@@ -44,45 +44,6 @@ class Robot:
         self.right__color_sensor = ColorSensor(Port.A)       
         self.drive_base.use_gyro(True)
 
-    async def drive_straight_old(
-        self,
-        distance_cm, 
-        speed=450, 
-        timeout_seconds=None,   # TODO: Support drive by seconds
-        stop_at_end=True,
-        acceleration_rate=100,
-        deceleration_rate=100,
-    ):
-        self.drive_base.settings(
-            straight_speed=speed, 
-            straight_acceleration=(acceleration_rate, deceleration_rate), 
-            turn_rate=None, 
-            turn_acceleration=None,
-        )
-        await self.drive_base.straight(
-            distance=distance_cm*10,
-            then=Stop.HOLD if stop_at_end else Stop.NONE,
-            wait=True,
-        )
-
-    async def drive_back_old(
-        self,
-        distance_cm, 
-        speed=450, 
-        timeout_seconds=None,   # TODO: Support drive by seconds
-        stop_at_end=True,
-        acceleration_rate=100,
-        deceleration_rate=100,
-    ):
-        await self.drive_straight_old(
-            distance_cm=-1*distance_cm, 
-            speed=speed,
-            timeout_seconds=timeout_seconds,
-            stop_at_end=stop_at_end,
-            acceleration_rate=acceleration_rate,
-            deceleration_rate=deceleration_rate,
-        )
-
     async def run_front_motor(self, speed, angle, wait= True):
 
         self.motor_front.reset_angle(angle=0)
@@ -152,7 +113,6 @@ class Robot:
             if left_intensity < threshold and right_intensity < threshold:
                 print("Aligned to the line!")
                 break
-
 
     async def drive_straight(
         self, 
@@ -227,79 +187,6 @@ class Robot:
         if stop_at_end:
             self.drive_base.stop()
 
-    
-
-    async def drive_straight_masiv(
-        self, 
-        distance_cm, 
-        target_speed=450, 
-        stop_at_end=True, 
-        timeout_seconds=None, 
-        gradual_stop=True, 
-        gradual_start=True,
-    ):
-        """
-        Drive straight using PID control for the DriveBase based on the drive base angle.
-        Negative distance_cm values will drive backwards.
-        :param distance_cm: Distance in centimeters.
-        :param speed: Speed in degrees per second.
-        :param stop_at_end: Whether to stop the motors when finished.
-        :param target_speed: Speed in degrees per second.
-        """
-        # Initialize PID controller
-        # p = סטייה עכשיות 
-        # i = מתקן לזווית 0``
-        # d = מחזיר למסלול המקורי
-        pid = PIDController(kp=0.5, ki=0.5, kd=1)       #pid = PIDController(kp=1, ki=0.13, kd=2.2)
-        kp = 0.97
-        ki = 0.05
-        kd = 1.82
-        # Initialize the timer
-        timer = StopWatch()
-        # Calculate the target angle
-        target_distance = distance_cm * 10
-        #set the speed according to the distance
-        if distance_cm < 0:
-            target_speed = -target_speed
-            target_distance = -target_distance
-        # reset robot angle and distance
-        self.drive_base.reset()
-        direction = 1 if distance_cm > 0 else -1
-
-        # Drive until the target distance is reached, correct angle using PID
-        while True:
-            # Calculate the current angle
-            current_angle = self.drive_base.angle()
-            current_distance = self.drive_base.distance()
-            # Calculate the correction
-            correction = await pid.compute(0, current_angle)
-            # Calculate the speed if gradual start/stop is enabled according to distance
-            if abs(current_distance) < target_distance / 2:
-                speed = target_speed
-                if gradual_start:
-                    speed = target_speed * abs(current_distance) / (target_distance / 2)
-            else:
-                speed = target_speed
-                if gradual_stop:
-                    speed = target_speed * (target_distance - abs(current_distance)) / (target_distance / 2)        
-            #set minimum speed
-            if abs(speed) < 50:
-                speed = 50 * direction 
-            print(f"Speed: {speed}, Correction: {correction}, travel: {current_distance}, current_angle: {current_angle}")
-            # Set the motor speed
-            self.drive_base.drive(speed, correction)
-            # Check if the target distance is reached
-            if abs(current_distance) >= abs(target_distance):
-                break
-            # Check if the timeout is reached
-            if timeout_seconds is not None and timer.time() > timeout_seconds:
-                break  
-            await wait(1)
-        # Stop the motors
-        if stop_at_end:
-            self.drive_base.stop()
-
-
     # async def arc_turn(self, radius_cm, angle_deg, speed=150):
     #     """
     #     Moves the robot in an arc with a specified radius (in cm) and angle (in degrees).
@@ -366,7 +253,7 @@ class Robot:
 
         # Keep turning until we reach the target angle
         while abs(self.hub.imu.heading() - degrees) > 2:  # Tolerance of 2 degrees
-            await wait(20) # Wait a little before checking again
+            await wait(0) # Wait a little before checking again
 
         # Stop the motors once we reach the target angle
         self.left_motor.stop()
@@ -413,27 +300,3 @@ class Robot:
             
             # Stop the drive base
             self.drive_base.stop()
-            
-
-
-
-    async def drive_with_turn(self, distance_cm, turn_rate, speed=150):
-        """
-        Drive the robot forward while turning at a specified rate.
-        :param distance_cm: The distance to drive in centimeters.
-        :param turn_rate: The rate of turn in degrees per second.
-        :param speed: The speed of the drive in degrees per second.
-        """
-        # Calculate the target distance in millimeters
-        target_distance_mm = distance_cm * 10
-        
-        # Reset the drive base
-        self.drive_base.reset()
-        
-        # Drive while turning until the target distance is reached
-        while abs(self.drive_base.distance()) < abs(target_distance_mm):
-            self.drive_base.drive(speed, turn_rate)
-            await wait(10)
-        
-        # Stop the drive base
-        self.drive_base.stop()
