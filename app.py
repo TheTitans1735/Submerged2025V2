@@ -5,10 +5,7 @@ from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
 from robot import Robot
-# from pynput import keyboard
-# for ilan
-# check change 
-# change 4
+
 ilan=Robot()
 # # Port A - Right color sensor
 # # Port B - Right wheel
@@ -170,7 +167,7 @@ async def massive():
     await ilan.wait_for_button(debug)
     await ilan.turn(30)
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(-60,500, **pid)
+    await ilan.drive_straight(-70,500, **pid)
     await ilan.wait_for_button(debug= False)
     # test7
 
@@ -209,7 +206,7 @@ async def main():
         ("2", banana, Icon.SAD)
     ]
     current_run = 0
-    print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
+    # print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
             
     while True:
         try:
