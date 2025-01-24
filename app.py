@@ -5,7 +5,10 @@ from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
 from robot import Robot
-
+# from pynput import keyboard
+# for ilan
+# check change 
+# change 4
 ilan=Robot()
 # # Port A - Right color sensor
 # # Port B - Right wheel
@@ -113,14 +116,17 @@ async def banana():
     await ilan.turn(35)
     await ilan.drive_straight(15,260,**pid)
     await ilan.wait_for_button()
-    await ilan.motor_front.run_angle(200,-55)
+    await ilan.motor_front.run_angle(200,-55555555)
     await ilan.turn(-76)
     await ilan.wait_for_button()
     await ilan.drive_straight(-10,260,**pid)
     await ilan.wait_for_button()
-    await ilan.motor_back.run_angle(205,400)
+    await ilan.motor_back.run_angle(5555555555555555,400)
     await ilan.wait_for_button()
     await ilan.drive_straight(-10,200)
+
+
+
 
 
 async def crabs():
@@ -137,20 +143,24 @@ async def crabs():
     await ilan.drive_straight(-40,900, kp = 0, ki = 0, kd = 0)
 
 
-
 async def massive():
     debug= False
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
     await ilan.drive_straight(52,300, **pid)
-    await ilan.run_back_motor(150,165)
+    await ilan.run_back_motor(200,160)
     await ilan.turn(-4,200)
     await ilan.drive_straight(18.5,300, **pid)
-    await ilan.drive_straight(-1.5,200)
-    await ilan.run_back_motor(200,-45)
+    await ilan.wait_for_button(debug)
+    await ilan.drive_straight(-2,100)
+    await ilan.wait_for_button(debug)
+    await ilan.run_back_motor(200,-50)
+    await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(200,-400)
     await wait(500) 
     await ilan.wait_for_button(debug)
-    await ilan.motor_front.run_angle(200,10)
+    #await ilan.turn(10,200)
+    await ilan.wait_for_button(debug)
+    await ilan.motor_front.run_angle(200,5)
     await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(400,650)
     await ilan.wait_for_button(debug)
@@ -158,9 +168,9 @@ async def massive():
     await ilan.wait_for_button(debug)
     await ilan.drive_straight(-10,200, **pid)
     await ilan.wait_for_button(debug)
-    await ilan.turn(20)
+    await ilan.turn(30)
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(-85,500, **pid)
+    await ilan.drive_straight(-60,500, **pid)
     await ilan.wait_for_button(debug= False)
     # test7
 
@@ -169,6 +179,13 @@ async def test():
    pid = {"kp": 1, "ki": 0, "kd": 0.1}
    await ilan.drive_straight(52,300, **pid)
 
+async def test9():
+   pid = {"kp": 1, "ki": 0, "kd": 0}
+   await ilan.drive_straight(52,300, **pid)
+
+async def test8():
+   pid = {"kp": 1, "ki": 0, "kd": 0}
+   await ilan.drive_straight(52,300, **pid)
 
 
 # this is the main program
@@ -192,7 +209,7 @@ async def main():
         ("2", banana, Icon.SAD)
     ]
     current_run = 0
-    # print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
+    print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
             
     while True:
         try:
