@@ -123,8 +123,8 @@ class Robot:
         gradual_stop=True, 
         gradual_start=True,
         kp=1, 
-        ki=0.13, 
-        kd=2.2,
+        ki=0, 
+        kd=2,
     ):
         """
         Drive straight using PID control for the DriveBase based on the drive base angle.
