@@ -106,24 +106,22 @@ async def sonar():
     await ilan.run_back_motor(300,-90)
 
 async def banana():
-    pid = {"kp":0.9, "ki": 0, "kd": 0.01}
-    await ilan.motor_back.run_angle(100,25)
-    await ilan.drive_straight(42,200, gradual_stop= True, **pid)
-    await ilan.drive_straight(-18,300, **pid)
+    pid = {"kp":1.1, "ki": 0, "kd": 0.0}
+    # await ilan.motor_back.run_angle(100,25)
+    await ilan.drive_straight(48, **pid)
+    await ilan.drive_straight(-24,100, **pid)
     await ilan.run_front_motor(310,300)
-    await ilan.turn(38 )
-    await ilan.drive_straight(33,230,**pid)
+    await ilan.turn(37)
+    await ilan.drive_straight(34,**pid)
     await ilan.turn(35)
-    await ilan.drive_straight(15,260,**pid)
-    await ilan.wait_for_button()
-    await ilan.motor_front.run_angle(200,-55555555)
-    await ilan.turn(-76)
-    await ilan.wait_for_button()
-    await ilan.drive_straight(-10,260,**pid)
-    await ilan.wait_for_button()
-    await ilan.motor_back.run_angle(5555555555555555,400)
-    await ilan.wait_for_button()
-    await ilan.drive_straight(-10,200)
+    await ilan.drive_straight(17,**pid)
+    await ilan.motor_front.run_angle(200,-300)
+    await ilan.drive_straight(-23)
+    await ilan.turn(-60)
+    # await ilan.wait_for_button()
+    await ilan.drive_straight(-50,700, gradual_start=False, gradual_stop=False)
+
+
 
 
 
@@ -142,18 +140,29 @@ async def crabs():
     await ilan.turn(20,150)
     await ilan.drive_straight(-40,900, kp = 0, ki = 0, kd = 0)
 
+async def green():
+    await ilan.turn(20,200)
+    await ilan.drive_straight(50,200)
+    await ilan.turn(68,200)
+    await ilan.wait_for_button()
+    await ilan.drive_straight(13,200)
+    await ilan.run_front_motor(200,-100)
+
 
 async def massive():
-    debug= False
+    debug= True
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
     await ilan.drive_straight(52,300, **pid)
-    await ilan.run_back_motor(200,160)
+    await ilan.wait_for_button(debug)
+    await ilan.run_back_motor(150,175)
+    await ilan.wait_for_button(debug)
     await ilan.turn(-4,200)
-    await ilan.drive_straight(18.5,300, **pid)
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(-2,100)
+    await ilan.drive_straight(17,300, **pid)
     await ilan.wait_for_button(debug)
-    await ilan.run_back_motor(200,-50)
+    # await ilan.drive_straight(-1.5,200)
+    await ilan.wait_for_button(debug)
+    await ilan.run_back_motor(200,-45)
     await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(200,-400)
     await wait(500) 
@@ -206,7 +215,8 @@ async def main():
         ("T", test),
         ("8", sonar,Icon.HEART),
         ("1", massive, Icon.LEFT),
-        ("2", banana, Icon.SAD)
+        ("2", banana, Icon.SAD),
+        ("3", green, Icon.FALSE)
     ]
     current_run = 0
     print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
