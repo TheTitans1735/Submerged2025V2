@@ -155,14 +155,18 @@ async def crabs():
 @time_it
 async def green():
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
-    await ilan.turn(20,200)
+    await ilan.turn(21,200)
     await ilan.drive_straight(50,200, **pid)
-    await ilan.turn(66,200)
-    await ilan.wait_for_button()
+    await ilan.turn(70,150)
+    await wait(1000)
     await ilan.drive_straight(13,200, **pid)
     await ilan.run_front_motor(200,-80)
-    await ilan.drive_straight(1.5,200, **pid)
-    await ilan.run_front_motor(200,20)
+    await ilan.drive_straight(6.5,200, **pid)
+    await ilan.run_front_motor(200,80)
+    await ilan.drive_straight(-15,200, **pid)
+    await ilan.turn(130, 150)
+    await wait(1000)
+    await ilan.drive_straight(-30,200, **pid)
 
 @time_it
 async def massive():
@@ -170,7 +174,7 @@ async def massive():
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
     await ilan.drive_straight(52,300, **pid)
     await ilan.wait_for_button(debug)
-    await ilan.run_back_motor(150,175)
+    await ilan.run_back_motor(100,175)
     await ilan.wait_for_button(debug)
     # await ilan.turn(-4,200)
     await ilan.wait_for_button(debug)
@@ -178,7 +182,7 @@ async def massive():
     await ilan.wait_for_button(debug)
     # await ilan.drive_straight(-1.5,200)
     await ilan.wait_for_button(debug)
-    await ilan.run_back_motor(200,-55)
+    await ilan.run_back_motor(200,-60)
     await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(200,-400)
     await wait(500) 
@@ -187,7 +191,7 @@ async def massive():
     await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(200,5)
     await ilan.wait_for_button(debug)
-    await ilan.motor_front.run_angle(400,650)
+    await ilan.motor_front.run_angle(400,500)
     await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(200,-300)
     await ilan.wait_for_button(debug)
