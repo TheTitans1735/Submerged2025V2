@@ -55,23 +55,32 @@ class Robot:
         self.right__color_sensor = ColorSensor(Port.A)       
         self.drive_base.use_gyro(True)
 
-    async def run_front_motor(self, speed, angle, wait= True):
-
+    async def run_front_motor(self, speed, angle, wait=True):
+        """
+        הפעלת המנוע הקדמי לזווית מסוימת במהירות נתונה.
+        :param speed: מהירות המנוע.
+        :param angle: הזווית שאליה יש להפעיל את המנוע.
+        :param wait: האם להמתין עד שהמנוע יגיע לזווית היעד.
+        """
         self.motor_front.reset_angle(angle=0)
         await self.motor_front.run_target(speed, target_angle=angle, then=Stop.HOLD, wait=wait)
         
     async def run_back_motor(self, speed, angle, wait=True):
         """
-        Run the back motor to a specific angle at a given speed.
-        :param speed: The speed at which to run the motor.
-        :param angle: The target angle to run the motor to.
-        :param wait: Whether to wait for the motor to reach the target angle.
+        הפעלת המנוע האחורי לזווית מסוימת במהירות נתונה.
+        :param speed: מהירות המנוע.
+        :param angle: הזווית שאליה יש להפעיל את המנוע.
+        :param wait: האם להמתין עד שהמנוע יגיע לזווית היעד.
         """
         self.motor_back.reset_angle(0)
         await self.motor_back.run_target(speed, angle, then=Stop.HOLD, wait=wait)
     
 
     async def wait_for_button(self,debug = True):
+        """
+        המתנה ללחיצה על כפתור.
+        :param debug: האם להפעיל מצב דיבוג.
+        """
         if not debug:
             return
         self.hub.light.blink(Color.MAGENTA,[1000])
@@ -80,7 +89,11 @@ class Robot:
         self.hub.light.on(Color.BLUE)
     
     async def drive_until_both_on_line(self, threshold=20, speed=200):
-      
+        """
+        נסיעה עד ששני החיישנים מזהים קו.
+        :param threshold: ערך זיהוי הקו.
+        :param speed: מהירות הנסיעה.
+        """
         self.left_motor.run(speed)
         self.right_motor.run(speed)
 
@@ -138,12 +151,16 @@ class Robot:
         kd=2,
     ):
         """
-        Drive straight using PID control for the DriveBase based on the drive base angle.
-        Negative distance_cm values will drive backwards.
-        :param distance_cm: Distance in centimeters.
-        :param speed: Speed in degrees per second.
-        :param stop_at_end: Whether to stop the motors when finished.
-        :param target_speed: Speed in degrees per second.
+        נסיעה ישרה באמצעות בקרת PID על בסיס זווית הבסיס.
+        :param distance_cm: מרחק ב-ס"מ.
+        :param target_speed: מהירות ב-מעלות לשנייה.
+        :param stop_at_end: האם לעצור את המנועים בסיום.
+        :param timeout_seconds: זמן מקסימלי לנסיעה בשניות.
+        :param gradual_stop: האם לבצע עצירה הדרגתית.
+        :param gradual_start: האם לבצע התחלה הדרגתית.
+        :param kp: מקדם פרופורציונלי.
+        :param ki: מקדם אינטגרלי.
+        :param kd: מקדם נגזר.
         """
         # Initialize PID controller
         # p = סטייה עכשיות 
@@ -243,10 +260,10 @@ class Robot:
     
     async def turn(self, degrees, speed=150):
         """
-        Turn the robot by a specific number of degrees.
-        Positive values turn clockwise, negative values turn counterclockwise.
-        :param degrees: The number of degrees to turn.
-        :param speed: The speed of the turn.
+        סיבוב הרובוט במספר מעלות מסוים.
+        ערכים חיוביים מסובבים בכיוון השעון, ערכים שליליים נגד כיוון השעון.
+        :param degrees: מספר המעלות לסיבוב.
+        :param speed: מהירות הסיבוב.
         """
         # Reset the built-in gyro sensor to 0 (start angle)
         self.hub.imu.reset_heading(0)
@@ -269,8 +286,12 @@ class Robot:
 
     async def arc_turn_with_distance(self, radius_cm, angle_deg, distance_cm, speed=150):
         """
-        Moves the robot in an arc with a specified radius (in cm), angle (in degrees), and distance (in cm).
-        The radius is measured from the center of the robot to the midpoint between the wheels.
+        תנועה בקשת עם רדיוס מסוים (בס"מ), זווית (במעלות) ומרחק (בס"מ).
+        הרדיוס נמדד ממרכז הרובוט לנקודת האמצע בין הגלגלים.
+        :param radius_cm: רדיוס הקשת בס"מ.
+        :param angle_deg: זווית הקשת במעלות.
+        :param distance_cm: מרחק הנסיעה בס"מ.
+        :param speed: מהירות הנסיעה.
         """
         # Calculate the total arc length for the given distance
         total_arc_length_cm = (2 * 3.14159 * radius_cm) * (angle_deg / 360)
@@ -289,22 +310,22 @@ class Robot:
 
 
     async def drive_with_turn(self, distance_cm, turn_rate, speed=150):
-            """
-            Drive the robot forward while turning at a specified rate.
-            :param distance_cm: The distance to drive in centimeters.
-            :param turn_rate: The rate of turn in degrees per second.
-            :param speed: The speed of the drive in degrees per second.
-            """
-            # Calculate the target distance in millimeters
-            target_distance_mm = distance_cm * 10
-            
-            # Reset the drive base
-            self.drive_base.reset()
-            
-            # Drive while turning until the target distance is reached
-            while abs(self.drive_base.distance()) < abs(target_distance_mm):
-                self.drive_base.drive(speed, turn_rate)
-                await wait(10)
-            
-            # Stop the drive base
-            self.drive_base.stop()
+        """
+        נסיעה קדימה תוך כדי סיבוב בקצב מסוים.
+        :param distance_cm: המרחק לנסיעה בסנטימטרים.
+        :param turn_rate: קצב הסיבוב במעלות לשנייה.
+        :param speed: מהירות הנסיעה במעלות לשנייה.
+        """
+        # Calculate the target distance in millimeters
+        target_distance_mm = distance_cm * 10
+        
+        # Reset the drive base
+        self.drive_base.reset()
+        
+        # Drive while turning until the target distance is reached
+        while abs(self.drive_base.distance()) < abs(target_distance_mm):
+            self.drive_base.drive(speed, turn_rate)
+            await wait(10)
+        
+        # Stop the drive base
+        self.drive_base.stop()
