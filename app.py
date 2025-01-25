@@ -4,7 +4,7 @@ from pybricks.robotics import DriveBase
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
-from robot import Robot
+from robot import Robot,time_it
 # from pynput import keyboard
 # for ilan
 # check change 
@@ -33,22 +33,22 @@ async def reverse_drive():
     ilan.drive_base.drive(-750, 0)
 
 async def turn_left():
-    await ilan.drive_base.turn(-360, wait=False)
+    ilan.drive_base.turn(-360, wait=False)
 
 async def turn_right():
-    await ilan.drive_base.turn(360, wait=False)
+    ilan.drive_base.turn(360, wait=False)
 
 async def front_motor():
     ilan.motor_front.dc(50)
 
 async def back_motor():
-    ilan.motor_back.dc(500)
+    ilan.motor_back.dc(100)
 
 async def front_motor_reverse():
     ilan.motor_front.dc(-50)
     
 async def back_motor_reverse():
-    ilan.motor_back.dc(-500)
+    ilan.motor_back.dc(-100)
 
 async def stop_all():
     ilan.drive_base.stop()
@@ -76,6 +76,7 @@ async def prepare_whale_motor():
     # await wait(1000)
     await ilan.run_back_motor(200,-290)
 
+@time_it
 async def whale():
     pid = {"kp":1, "ki":0, "kd": 0}
     ilan.drive_base.reset()
@@ -120,6 +121,7 @@ async def sonar():
     await ilan.drive_straight(-53,10)
     await ilan.run_back_motor(300,-90)
 
+@time_it
 async def banana():
     pid = {"kp":1.1, "ki": 0, "kd": 0.0}
     # await ilan.motor_back.run_angle(100,25)
@@ -136,12 +138,7 @@ async def banana():
     # await ilan.wait_for_button()
     await ilan.drive_straight(-50,700, gradual_start=False, gradual_stop=False)
 
-
-
-
-
-
-
+@time_it
 async def crabs():
     # await ilan.run_back_motor(-200,200)
     await ilan.drive_straight(-107,800, gradual_start=False, kp = 0, ki = 0, kd = 0)
@@ -155,6 +152,7 @@ async def crabs():
     await ilan.turn(20,150)
     await ilan.drive_straight(-40,900, kp = 0, ki = 0, kd = 0)
 
+@time_it
 async def green():
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
     await ilan.turn(20,200)
@@ -166,7 +164,7 @@ async def green():
     await ilan.drive_straight(1.5,200, **pid)
     await ilan.run_front_motor(200,20)
 
-
+@time_it
 async def massive():
     debug= False
     pid = {"kp": 1, "ki": 0, "kd": 0.0}

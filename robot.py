@@ -30,6 +30,15 @@ class PIDController:
         output = self.kp * error + self.ki * self.integral + self.kd * derivative
         self.previous_error = error
         return output
+    
+
+def time_it(func):
+    def wrapper(*args, **kwargs):
+        timer = StopWatch()
+        result = func(*args, **kwargs)
+        print(f"run took {timer.time()/1000} sec")
+        return result
+    return wrapper
 
 
 class Robot:
@@ -139,9 +148,6 @@ class Robot:
         # i = מתקן לזווית 0``
         # d = מחזיר למסלול המקורי
         pid = PIDController(kp, ki, kd)
-        kp = 0.97
-        ki = 0.05
-        kd = 1.82
         # Initialize the timer
         timer = StopWatch()
         # Calculate the target angle

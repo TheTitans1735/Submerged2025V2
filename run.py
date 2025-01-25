@@ -4,7 +4,7 @@ from pybricks.robotics import DriveBase
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
-from robot import Robot
+from robot import Robot, time_it
 # from pynput import keyboard
 # for gebetta
 ilan=Robot()
@@ -23,6 +23,7 @@ ilan=Robot()
 # drive_base = DriveBase(left_motor,right_motor,57,10) 
 
 
+
 async def drive():   
     ilan.drive_base.drive(151,0)
 
@@ -31,22 +32,22 @@ async def reverse_drive():
     ilan.drive_base.drive(-750, 0)
 
 async def turn_left():
-    await ilan.drive_base.turn(-360, wait=False)
+    ilan.drive_base.turn(-360, wait=False)
 
 async def turn_right():
-    await ilan.drive_base.turn(360, wait=False)
+    ilan.drive_base.turn(360, wait=False)
 
 async def front_motor():
-    ilan.motor_front.dc(5000)
+    ilan.motor_front.dc(100)
 
 async def back_motor():
-    ilan.motor_back.dc(4000)
+    ilan.motor_back.dc(100)
 
 async def front_motor_reverse():
     ilan.motor_front.dc(-50)
     
 async def back_motor_reverse():
-    ilan.motor_back.dc(-500)
+    ilan.motor_back.dc(-100)
 
 async def stop_all():
     ilan.drive_base.stop()
@@ -74,7 +75,7 @@ async def prepare_whale_motor():
     # await wait(1000)
     await ilan.run_back_motor(200,-290)
 
-
+@time_it
 async def whale():
     pid = {"kp":1, "ki":0, "kd": 0}
     ilan.drive_base.reset()
@@ -102,13 +103,14 @@ async def whale():
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
     await multitask(ilan.drive_straight(-9, **pid))
-    await ilan.run_back_motor(200, -110)        
+    await ilan.run_back_motor(200, -105)        
     await ilan.drive_straight(19)
     # await ilan.wait_for_button(
     # )
     await ilan.turn(-15)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(50,200, **pid))
+    await multitask(ilan.drive_straight(55,700,gradual_stop=False ,**pid), ilan.run_back_motor(800,-290))
+    await ilan.run_back_motor(200,290)
 
 async def sonar():
     await ilan.drive_straight(-30,300)
@@ -119,26 +121,22 @@ async def sonar():
     await ilan.drive_straight(-53)
     await ilan.run_back_motor(300,-90)
 
+@time_it
 async def banana():
-    pid = {"kp":1.1, "ki": 0, "kd": 0.0}
+    pid = {"kp":1, "ki": 0, "kd": 0.0}
     # await ilan.motor_back.run_angle(100,25)
-    await ilan.drive_straight(3,**pid)
-    await ilan.wait_for_button()
-    await ilan.turn(30)
-    await ilan.drive_straight(48, **pid)
-    await ilan.wait_for_button()
-    await ilan.drive_straight(-24,100, **pid)
-    await ilan.wait_for_button()
+    await ilan.drive_straight(44,200, gradual_stop= False, **pid)
+    await ilan.drive_straight(-13,300, **pid)
     await ilan.run_front_motor(310,300)
-    await ilan.turn(37)
-    await ilan.drive_straight(34,**pid)
+    await ilan.turn(40)
+    await ilan.drive_straight(37,230,**pid)
     await ilan.turn(35)
-    await ilan.drive_straight(17,**pid)
+    await ilan.drive_straight(17,260,**pid)
     await ilan.motor_front.run_angle(200,-300)
-    await ilan.drive_straight(-23)
+    await ilan.drive_straight(-20, 450)
     await ilan.turn(-60)
     # await ilan.wait_for_button()
-    await ilan.drive_straight(-50,700, gradual_start=False, gradual_stop=False)
+    await ilan.drive_straight(-50, 500, gradual_start=False, gradual_stop=False)
     # await ilan.wait_for_button()
     # await ilan.turn(-67)
     # await ilan.drive_straight(-10,260,**pid)
@@ -147,6 +145,7 @@ async def banana():
     # await ilan.run_back_motor(205,750)
     # await ilan.drive_straight(-11,500, gradual_start=False, gradual_stop=False)
 
+@time_it
 async def crabs():
     await ilan.drive_straight(60)
     await ilan.turn(5)
@@ -158,6 +157,7 @@ async def crabs():
     await ilan.turn(-90)
     await ilan.drive_straight(-90)
 
+@time_it
 async def green():
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
     await ilan.turn(20,200)
@@ -169,6 +169,7 @@ async def green():
     await ilan.drive_straight(1.5,200, **pid)
     await ilan.run_front_motor(200,20)
 
+@time_it
 async def massive():
     debug= False
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
@@ -200,6 +201,7 @@ async def massive():
     await ilan.drive_straight(-85,500, **pid)
     await ilan.wait_for_button(debug= False)
 
+@time_it
 async def test():
     pid = {"kp":1, "ki":0.1, "kd": 0.01}
     await ilan.drive_straight(60,200, gradual_stop= False, **pid)
@@ -244,9 +246,11 @@ async def main():
 
             elif (Button.RIGHT in ilan.hub.buttons.pressed()):
                 await runs[current_run][1]()
+                print("run ended!!!")
 
             elif (Button.BLUETOOTH in ilan.hub.buttons.pressed()):
                 await test()
+                print("test ended!!!")
             else:
                 await stop_all()
         except Exception as e:
