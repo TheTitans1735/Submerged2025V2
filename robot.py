@@ -36,8 +36,10 @@ def time_it(func):
     def wrapper(*args, **kwargs):
         timer = StopWatch()
         result = func(*args, **kwargs)
-        print(f"run took {timer.time()/1000} sec")
+        run_took = timer.time() / 1000.0
+        print(f"run took {run_took} sec")
         return result
+
     return wrapper
 
 

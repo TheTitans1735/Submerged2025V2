@@ -94,11 +94,11 @@ async def whale():
     # await ilan.wait_for_button()
     await ilan.drive_straight(4, **pid)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(-28,100, **pid), ilan.motor_back.run_angle(250,-290))
+    await multitask(ilan.drive_straight(-30,100, **pid), ilan.motor_back.run_angle(250,-290))
     await ilan.turn(120)
     # await ilan.wait_for_button()
     await ilan.motor_back.run_angle(250,90)
-    await ilan.motor_back.run_angle(125,120)
+    await ilan.motor_back.run_angle(150  ,120)
     await ilan.drive_straight(-20,150,**pid,)
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
@@ -120,6 +120,12 @@ async def sonar():
     await ilan.turn(-5)
     await ilan.drive_straight(-53)
     await ilan.run_back_motor(300,-90)
+
+@time_it
+async def coral():
+    await ilan.drive_straight(8,100)
+    await ilan.drive_straight(-5,500,gradual_stop=False)
+
 
 @time_it
 async def banana():
@@ -228,14 +234,13 @@ async def main():
         ("T", test),
         ("8", sonar,Icon.HEART),
         ("1", massive, Icon.LEFT),
-        ("2", green, Icon.FALSE)
+        ("2", green, Icon.FALSE),
+        ("3", coral ,Icon.CIRCLE)
 
         # ("9", play_sound)
     ]
     current_run = 0
     print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
-    
-            
     while True:
         try:
             if (Button.LEFT in ilan.hub.buttons.pressed()):
@@ -249,11 +254,9 @@ async def main():
 
             elif (Button.RIGHT in ilan.hub.buttons.pressed()):
                 await runs[current_run][1]()
-                print("run ended!!!")
 
             elif (Button.BLUETOOTH in ilan.hub.buttons.pressed()):
                 await test()
-                print("test ended!!!")
             else:
                 await stop_all()
         except Exception as e:
