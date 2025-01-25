@@ -176,7 +176,7 @@ async def massive():
     await ilan.wait_for_button(debug)
     # await ilan.turn(-4,200)
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(15,300, **pid)
+    await ilan.drive_straight(14,300, **pid)
     await ilan.wait_for_button(debug)
     # await ilan.drive_straight(-1.5,200)
     await ilan.wait_for_button(debug)
@@ -197,8 +197,8 @@ async def massive():
     await ilan.wait_for_button(debug)
     await ilan.turn(30)
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(-60,500, **pid)
-    await ilan.wait_for_button(debug= False)
+    await ilan.drive_straight(-80,500, **pid)
+    await ilan.wait_for_button(debug)
     # test7
 
 
