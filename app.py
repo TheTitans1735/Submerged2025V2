@@ -78,28 +78,27 @@ async def prepare_whale_motor():
 
 @time_it
 async def whale():
+    """
+    ביצוע משימת הלוויתן.
+    """
     pid = {"kp":1, "ki":0, "kd": 0}
     ilan.drive_base.reset()
     await ilan.drive_straight(19)
-    # await ilan.wait_for_button(
-    # )
     await ilan.turn(-15)
-    # await ilan.wait_for_button()
     await multitask(ilan.drive_straight(50,200, **pid), prepare_whale_motor())
     await ilan.wait_for_button(debug=False)
     await ilan.turn(55)
-    # await ilan.wait_for_button()
-    await ilan.drive_straight(20,150, **pid)
+    await ilan.drive_straight(19,150,gradual_stop=False, **pid)
     await wait(1000)
     await ilan.drive_straight(-2,150, **pid)
     # await ilan.wait_for_button()
-    await ilan.drive_straight(4, **pid)
+    await ilan.drive_straight(2,200,gradual_stop=False, **pid)
     # await ilan.wait_for_button()
     await multitask(ilan.drive_straight(-28,100, **pid), ilan.motor_back.run_angle(250,-290))
     await ilan.turn(120)
     # await ilan.wait_for_button()
     await ilan.motor_back.run_angle(250,90)
-    await ilan.motor_back.run_angle(125,120)
+    await ilan.motor_back.run_angle(150  ,135)
     await ilan.drive_straight(-20,150,**pid,)
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
