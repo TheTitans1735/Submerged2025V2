@@ -154,9 +154,9 @@ async def crabs():
 
 @time_it
 async def green():
-    pid = {"kp": 0.5, "ki": 0.1, "kd": 0.3}
+    pid = {"kp": 1, "ki": 0, "kd": 0}
     Debug = False
-    await ilan.turn(21,10)
+    await ilan.turn(23,100)
     await ilan.wait_for_button(Debug)
     await ilan.drive_straight(52,200, **pid)
     await ilan.wait_for_button(Debug)
