@@ -148,7 +148,7 @@ class Robot:
         gradual_start=True,
         kp=1, 
         ki=0, 
-        kd=2,
+        kd=0,
     ):
         """
         נסיעה ישרה באמצעות בקרת PID על בסיס זווית הבסיס.
