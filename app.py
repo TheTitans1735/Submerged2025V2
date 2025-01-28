@@ -121,8 +121,8 @@ async def sonar():
     await ilan.drive_straight(-53,10)
     await ilan.run_back_motor(300,-90)
 async def pick_up():
-    pid = { "kp": 1, "ki": 0.1, "kd": 0.01}
-    await ilan.drive_straight(48,200,gradual_stop=False, **pid)
+    pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
+    await ilan.drive_straight(48,150,gradual_stop=False, **pid)
     await ilan.drive_straight(-14, **pid)
     await ilan.run_front_motor(310,300)
     await ilan.turn(35)
@@ -132,7 +132,7 @@ async def pick_up():
     await ilan.run_front_motor(200,-300)
     await ilan.drive_straight(-20,450, **pid)
     await ilan.turn(-65)
-    await ilan.drive_straight(-65,400, **pid)
+    await ilan.drive_straight(-65,700, **pid,gradual_stop=False)
 @time_it
 async def banana():
     pid = {"kp":0.9, "ki": 0, "kd": 0}
@@ -269,7 +269,7 @@ async def main():
         ("6", turn, Icon.CLOCKWISE),
         ("crabs", crabs, Icon.HAPPY),
         ("7",whale, Icon.FULL),
-        ("T", test),
+        ("T", test), 
         ("8", sonar,Icon.HEART),
         ("1", massive, Icon.LEFT),
         ("2", pick_up, Icon.SAD),
@@ -294,7 +294,7 @@ async def main():
                 await runs[current_run][1]()
 
             elif (Button.BLUETOOTH in ilan.hub.buttons.pressed()):
-                await test()
+                await pick_up()
             else:
                 await stop_all()
         except Exception as e:
