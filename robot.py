@@ -284,6 +284,32 @@ class Robot:
         self.left_motor.stop()
         self.right_motor.stop()
 
+    async def turn_without_right_wheel(self, degrees, speed=150):
+        """
+        סיבוב הרובוט במספר מעלות מסוים.
+        ערכים חיוביים מסובבים בכיוון השעון, ערכים שליליים נגד כיוון השעון.
+        :param degrees: מספר המעלות לסיבוב.
+        :param speed: מהירות הסיבוב.
+        """
+        # Reset the built-in gyro sensor to 0 (start angle)
+        self.hub.imu.reset_heading(0)
+
+        # Determine the direction of the turn
+        if degrees > 0:
+            self.left_motor.run(speed)
+            # self.right_motor.run(-speed)
+        else:
+            self.left_motor.run(-speed)
+            # self.right_motor.run(speed)
+
+        # Keep turning until we reach the target angle
+        while abs(self.hub.imu.heading() - degrees) > 2:  # Tolerance of 2 degrees
+            await wait(0) # Wait a little before checking again
+
+        # Stop the motors once we reach the target angle
+        self.left_motor.stop()
+        self.right_motor.stop()
+
     async def arc_turn_with_distance(self, radius_cm, angle_deg, distance_cm, speed=150):
         """
         תנועה בקשת עם רדיוס מסוים (בס"מ), זווית (במעלות) ומרחק (בס"מ).
