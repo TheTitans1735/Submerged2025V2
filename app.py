@@ -172,11 +172,11 @@ async def crabs():
 async def green():
     pid = {"kp": 1, "ki": 0, "kd": 0}
     Debug = False
-    await ilan.turn(25,100)
+    await ilan.turn(22,100)
     # await ilan.wait_for_button(Debug)
     await ilan.drive_straight(51,200, **pid)
     await ilan.wait_for_button(Debug)
-    await ilan.turn(67,150)
+    await ilan.turn(70,150)
     await wait(100)
     await ilan.wait_for_button(Debug)
     await ilan.drive_straight(20,200, **pid)
@@ -187,7 +187,7 @@ async def green():
     await ilan.wait_for_button(Debug)
     await ilan.drive_straight(-27,200,**pid)
     await ilan.wait_for_button(Debug)
-    await ilan.turn(-44)
+    await ilan.turn(-50)
     await ilan.wait_for_button(Debug)
     await ilan.drive_straight(-10,900,gradual_stop=False, **pid)
     await ilan.wait_for_button(Debug)
