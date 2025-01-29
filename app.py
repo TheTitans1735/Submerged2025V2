@@ -125,8 +125,8 @@ async def pick_up():
     await ilan.drive_straight(48,150,gradual_stop=False, **pid)
     await ilan.drive_straight(-14, **pid)
     await ilan.run_front_motor(310,300)
-    await ilan.turn(35)
-    await ilan.drive_straight(39, **pid)
+    await ilan.turn(42 )
+    await ilan.drive_straight(41, **pid)
     await ilan.turn(35)
     await ilan.drive_straight(12, **pid)
     await ilan.run_front_motor(200,-300)
@@ -202,6 +202,7 @@ async def green():
 async def coral():
     await ilan.drive_straight(8,100)
     await ilan.drive_straight(-8,gradual_start=False,gradual_stop=False)
+
 @time_it
 async def massive():
     debug= False
@@ -265,12 +266,12 @@ async def main():
         ("5", nigg, Icon.CIRCLE),
         ("6", turn, Icon.CLOCKWISE),
         ("crabs", crabs, Icon.HAPPY),
-        ("7",whale, Icon.FULL),
         ("T", test), 
         ("8", sonar,Icon.HEART),
         ("1", massive, Icon.LEFT),
         ("2", pick_up, Icon.SAD),
         ("3", coral, Icon.PAUSE),
+        ("7",whale, Icon.FULL),
         ("3", green, Icon.FALSE)
     ]
     current_run = 0
