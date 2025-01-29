@@ -189,13 +189,13 @@ async def green():
     await ilan.wait_for_button(Debug)
     await ilan.turn(-50)
     await ilan.wait_for_button(Debug)
-    await ilan.drive_straight(-10,900,gradual_stop=False, **pid)
+    await ilan.drive_straight(-11,900,gradual_stop=False, **pid)
     await ilan.wait_for_button(Debug)
     await ilan.motor_back.run_time(-700,1500)
     await ilan.motor_back.run_time(500,1500)
     await ilan.drive_straight(7,700,gradual_stop=False ,**pid)
     # await ilan.drive_straight(-5,200, **pid)
-    await ilan.turn(40)
+    await ilan.turn(35)
     await ilan.drive_straight(60,700,gradual_stop=False)
 
 @time_it
