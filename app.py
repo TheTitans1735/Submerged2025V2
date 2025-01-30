@@ -122,7 +122,7 @@ async def sonar():
     await ilan.run_back_motor(300,-90)
 async def pick_up():
     pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
-    await ilan.drive_straight(48,150,gradual_stop=False, **pid)
+    await ilan.drive_straight(46 ,150,gradual_stop=False, **pid)
     await ilan.drive_straight(-14, **pid)
     await ilan.run_front_motor(310,300)
     await ilan.turn(42 )
@@ -158,8 +158,8 @@ async def banana():
 async def crabs():
     # await ilan.run_back_motor(-200,200)
     await ilan.drive_straight(-107,800, gradual_start=False, kp = 0, ki = 0, kd = 0)
-    await ilan.run_back_motor(200,350)
-    await ilan.drive_straight(11,150, kp = 0, ki = 0, kd = 0)
+    await ilan.motor_back.run_time(200,2500)
+    await ilan.drive_straight(12,150, kp = 0, ki = 0, kd = 0)
     await multitask(ilan.drive_straight(25,450, kp = 0, ki = 0, kd = 0), ilan.run_back_motor(200, -100))
     await ilan.turn(-31,100)
     await ilan.drive_straight(-35,450, kp = 0, ki = 0, kd = 0)
@@ -194,12 +194,9 @@ async def green():
     await ilan.motor_back.run_time(500,1500)
     await ilan.wait_for_button(Debug)
     await ilan.drive_straight(7,700,gradual_stop=False ,**pid)
-    # await ilan.drive_straight(-5,200, **pid)
     await ilan.turn(35)
     await ilan.drive_straight(60,700,gradual_stop=False)
-    # await ilan.drive_straight(-7,200, **pid)
-    # await ilan.turn(-69,200)
-    # await ilan.drive_straight(-60,200, **pid)
+
 
 @time_it
 async def coral():
@@ -254,28 +251,32 @@ async def test8():
    pid = {"kp": 1, "ki": 0, "kd": 0}
    await ilan.drive_straight(52,300, **pid)
 
+async def battery_check():
+    pass
+
 
 # this is the main program
 async def main():
     runs = [
-        ("5", drive, Icon.ARROW_LEFT),
-        ("6", reverse_drive, Icon.ARROW_RIGHT),
-        ("7", turn_left, Icon.ARROW_LEFT_DOWN),
-        ("8", turn_right, Icon.ARROW_LEFT_UP),
+        ("0", battery_check, Icon.TRIANGLE_UP),
+        ("1", massive, Icon.LEFT),
+        ("2", green, Icon.FALSE), 
+        ("3", crabs, Icon.HAPPY),
+        ("4", pick_up, Icon.SAD),
+        ("5", coral, Icon.PAUSE),
+        ("7", whale, Icon.FULL),
+        (" ", drive, Icon.ARROW_LEFT),
+        (" ", reverse_drive, Icon.ARROW_RIGHT),
+        (" ", turn_left, Icon.ARROW_LEFT_DOWN),
+        (" ", turn_right, Icon.ARROW_LEFT_UP),
         ("1", front_motor),
         ("2", back_motor),
         ("3", front_motor_reverse),
         ("4", back_motor_reverse),
-        ("5", nigg, Icon.CIRCLE),
-        ("6", turn, Icon.CLOCKWISE),
-        ("crabs", crabs, Icon.HAPPY),
+        (" ", nigg, Icon.CIRCLE),
+        (" ", turn, Icon.CLOCKWISE),
+        (" ", sonar,Icon.HEART),
         ("T", test), 
-        ("8", sonar,Icon.HEART),
-        ("1", massive, Icon.LEFT),
-        ("2", pick_up, Icon.SAD),
-        ("3", coral, Icon.PAUSE),
-        ("7",whale, Icon.FULL),
-        ("3", green, Icon.FALSE)
     ]
     current_run = 0
     print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
@@ -292,10 +293,24 @@ async def main():
                     ilan.hub.display.icon(runs[current_run][2])
 
             elif (Button.RIGHT in ilan.hub.buttons.pressed()):
-                await runs[current_run][1]()
+                current_run -= 1
+                if current_run < 0:
+                    current_run = len(runs)-1
+                if len(runs[current_run]) ==2:
+                    ilan.hub.display.char(runs[current_run][0])
+                else:
+                    ilan.hub.display.icon(runs[current_run][2])
 
             elif (Button.BLUETOOTH in ilan.hub.buttons.pressed()):
-                await pick_up()
+                await runs[current_run][1]()
+
+                current_run += 1
+                if current_run >= len(runs):
+                    current_run = 0
+                if len(runs[current_run]) ==2:
+                    ilan.hub.display.char(runs[current_run][0])
+                else:
+                    ilan.hub.display.icon(runs[current_run][2])
             else:
                 await stop_all()
         except Exception as e:
