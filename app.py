@@ -84,11 +84,11 @@ async def whale():
     pid = {"kp":1, "ki":0, "kd": 0}
     ilan.drive_base.reset()
     await ilan.drive_straight(19)
-    await ilan.turn(-15)
-    await multitask(ilan.drive_straight(50,200, **pid), prepare_whale_motor())
+    await ilan.turn(-20)
+    await multitask(ilan.drive_straight(45,200, **pid), prepare_whale_motor())
     await ilan.wait_for_button(debug=False)
-    await ilan.turn(55)
-    await ilan.drive_straight(19,140,gradual_stop=False, **pid)
+    await ilan.turn(57)
+    await ilan.drive_straight(24,100,gradual_stop=False, **pid)
     await wait(1000)
     await ilan.drive_straight(-2,150, **pid)
     # await ilan.wait_for_button()
@@ -120,6 +120,8 @@ async def sonar():
     await ilan.run_back_motor(150,-210)
     await ilan.drive_straight(-53,10)
     await ilan.run_back_motor(300,-90)
+
+
 async def pick_up():
     pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
     await ilan.drive_straight(46 ,150,gradual_stop=False, **pid)
@@ -133,6 +135,8 @@ async def pick_up():
     await ilan.drive_straight(-20,450, **pid)
     await ilan.turn(-65)
     await ilan.drive_straight(-65,700, **pid,gradual_stop=False)
+
+
 @time_it
 async def banana():
     pid = {"kp":0.9, "ki": 0, "kd": 0}
@@ -186,7 +190,7 @@ async def green():
     await ilan.turn(-40,100)
     await ilan.wait_for_button(Debug)
     await ilan.drive_straight(-18,200,gradual_stop=True, **pid)
-    await ilan.wait_for_button(Debug)
+    await ilan.left_motor.run_time(-200,1000)
     await ilan.drive_straight(1,300)
     await ilan.wait_for_button(Debug)
     await ilan.motor_back.run_time(-700,1500)
