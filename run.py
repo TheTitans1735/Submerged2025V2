@@ -98,8 +98,8 @@ async def whale():
     await multitask(ilan.drive_straight(-29,100, **pid), ilan.motor_back.run_angle(250,-290))
     await ilan.turn(120)
     # await ilan.wait_for_button()
-    await ilan.motor_back.run_angle(250,90)
-    await ilan.motor_back.run_angle(150  ,140 )
+    await ilan.run_back_motor(250,216 )
+    # await ilan.motor_back.run_angle(150  ,140 )
     await ilan.drive_straight(-20,150,**pid,)
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
@@ -110,7 +110,7 @@ async def whale():
     # )
     await ilan.turn(-15)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(55,700,gradual_stop=False ,**pid), ilan.run_back_motor(800,-290))
+    # await multitask(ilan.drive_straight(55,700,gradual_stop=False ,**pid), ilan.run_back_motor(800,-290))
     # await ilan.run_back_motor(200,290)
 
 async def sonar():
@@ -159,7 +159,7 @@ async def crabs():
     # await ilan.run_back_motor(-200,200)
     await ilan.drive_straight(-107,800, gradual_start=False, kp = 0, ki = 0, kd = 0)
     await ilan.motor_back.run_time(200,2500)
-    await ilan.drive_straight(12,150, kp = 0, ki = 0, kd = 0)
+    await ilan.drive_straight(12,120, kp = 0, ki = 0, kd = 0)
     await multitask(ilan.drive_straight(25,450, kp = 0, ki = 0, kd = 0), ilan.run_back_motor(200, -100))
     await ilan.turn(-31,100)
     await ilan.drive_straight(-35,450, kp = 0, ki = 0, kd = 0)
@@ -186,7 +186,7 @@ async def green():
     await ilan.turn(-40,100)
     await ilan.wait_for_button(Debug)
     await ilan.drive_straight(-18,200,gradual_stop=True, **pid)
-    await ilan.left_motor.run_time(-200,1000)
+    await ilan.wait_for_button(Debug)
     await ilan.drive_straight(1,300)
     await ilan.wait_for_button(Debug)
     await ilan.motor_back.run_time(-700,1500)
@@ -280,7 +280,6 @@ async def main():
     ]
     current_run = 0
     print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
-    
             
     while True:
         try:
@@ -322,7 +321,3 @@ async def main():
 
 
 run_task(main())
-
-
-
-
