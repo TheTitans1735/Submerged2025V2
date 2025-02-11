@@ -95,7 +95,7 @@ async def whale():
     await ilan.turn(3)
     await ilan.drive_straight(4,200,gradual_stop=False, **pid)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(-29,100, **pid), ilan.motor_back.run_angle(250,-290))
+    await multitask(ilan.drive_straight(-30,100, **pid), ilan.motor_back.run_angle(250,-290))
     await ilan.turn(120)
     # await ilan.wait_for_button()
     await ilan.run_back_motor(250,216 )
@@ -120,9 +120,10 @@ async def sonar():
     await ilan.run_back_motor(150,-210)
     await ilan.drive_straight(-53,10)
     await ilan.run_back_motor(300,-90)
+    
 async def pick_up():
     pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
-    await ilan.drive_straight(46 ,150,gradual_stop=False, **pid)
+    await ilan.drive_straight(46 ,gradual_stop=False, **pid)
     await ilan.drive_straight(-14, **pid)
     await ilan.run_front_motor(310,300)
     await ilan.turn(42 )
@@ -240,8 +241,9 @@ async def massive():
 
 
 async def test():
-   pid = {"kp": 1, "ki": 0, "kd": 0.1}
-   await ilan.drive_straight(52,300, **pid)
+   await ilan.turn(90, 150)
+   await wait(1000)
+   await ilan.turn(-90, 150)
 
 async def test9():
    pid = {"kp": 1, "ki": 0, "kd": 0}

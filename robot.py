@@ -50,7 +50,7 @@ class Robot:
         self.right_motor = Motor(Port.B)
         self.motor_front = Motor(Port.C)
         self.motor_back = Motor(Port.D)
-        self.drive_base = DriveBase(self.left_motor, self.right_motor,57,112) 
+        self.drive_base = DriveBase(self.left_motor, self.right_motor,62.4,120) 
         self.left_color_sensor = ColorSensor(Port.E)    
         self.right__color_sensor = ColorSensor(Port.A)       
         self.drive_base.use_gyro(True)
@@ -137,15 +137,43 @@ class Robot:
             if left_intensity < threshold and right_intensity < threshold:
                 print("Aligned to the line!")
                 break
-
+    
     async def drive_straight(
+        self, 
+        distance_cm, 
+        target_speed=1000, 
+        stop_at_end=True, 
+        timeout_seconds=None, 
+        gradual_stop=True, 
+        gradtual_start=True,
+        kp=1, 
+        ki=0, 
+        kd=0,
+    ):
+        acceleration_rate=target_speed/2 if gradtual_start else target_speed
+        deceleration_rate=target_speed/2 if gradual_stop else target_speed
+
+        self.drive_base.settings(
+            straight_speed=target_speed, 
+            straight_acceleration=(acceleration_rate, deceleration_rate), 
+            turn_rate=None, 
+            turn_acceleration=None,
+        )
+
+        await self.drive_base.straight(
+            distance=distance_cm*10,
+            then=Stop.HOLD if stop_at_end else Stop.NONE,
+            wait=True,
+        )
+
+    async def drive_straight1_with_pid(
         self, 
         distance_cm, 
         target_speed=300, 
         stop_at_end=True, 
         timeout_seconds=None, 
         gradual_stop=True, 
-        gradual_start=True,
+        gradtual_start=True,
         kp=1, 
         ki=0, 
         kd=0,
@@ -189,8 +217,8 @@ class Robot:
             # Calculate the speed if gradual start/stop is enabled according to distance
             if abs(current_distance) < target_distance / 2:
                 speed = target_speed
-                if gradual_start:
-                    speed = target_speed * abs(current_distance) / (target_distance / 2)
+                # if gradual_start:
+                    # speed = target_speed * abs(current_distance) / (target_distance / 2)
             else:
                 speed = target_speed
                 if gradual_stop:
@@ -256,8 +284,7 @@ class Robot:
     #     self.right_motor.brake()
 
     #     print(f"Completed arc turn: Radius = {radius_cm} cm, Angle = {angle_deg}° (Adjusted for gyro offset).")
-
-    
+     
     async def turn(self, degrees, speed=150):
         """
         סיבוב הרובוט במספר מעלות מסוים.
@@ -278,7 +305,7 @@ class Robot:
 
         # Keep turning until we reach the target angle
         while abs(self.hub.imu.heading() - degrees) > 2:  # Tolerance of 2 degrees
-            await wait(0) # Wait a little before checking again
+            await wait(0.1) # Wait a little before checking again
 
         # Stop the motors once we reach the target angle
         self.left_motor.stop()
