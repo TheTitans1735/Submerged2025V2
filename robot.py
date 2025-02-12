@@ -152,7 +152,7 @@ class Robot:
     ):
         acceleration_rate=target_speed/2 if gradtual_start else target_speed
         deceleration_rate=target_speed/2 if gradual_stop else target_speed
-
+        #2025-02-12 rotem remark settings
         self.drive_base.settings(
             straight_speed=target_speed, 
             straight_acceleration=(acceleration_rate, deceleration_rate), 
