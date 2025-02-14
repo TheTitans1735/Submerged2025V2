@@ -85,6 +85,23 @@
             "env": {
                 "PYTHONUTF8": "1"
             }
+        },
+        {
+            "name": "test(gebetta)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pybricksdev",
+            "args": [
+                "run",
+                "ble",
+                "--name",
+                "YAHAV",
+                "run.py"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONUTF8": "1"
+            }
         }
     ]
 }
