@@ -241,7 +241,7 @@ async def massive():
 
 async def test():
    pid = {"kp": 1, "ki": 0, "kd": 0.1}
-   await ilan.drive_straight(52,300, **pid)
+   await ilan.drive_straight(52, **pid)
 
 async def test9():
    pid = {"kp": 1, "ki": 0, "kd": 0}
