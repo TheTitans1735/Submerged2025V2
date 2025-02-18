@@ -77,7 +77,6 @@ async def prepare_whale_motor():
     await ilan.run_back_motor(200,-290)
 
 @time_it
-@time_it
 async def whale():
     """
     ביצוע משימת הלוויתן.
@@ -212,6 +211,7 @@ async def green():
     await ilan.wait_for_button(Debug)
     await wait(100)
     await ilan.drive_straight(20, 700, **pid)
+    await ilan.wait_for_button()
     await ilan.drive_straight(-14, 700, **pid)
     await ilan.turn(135, 150)
     await ilan.drive_straight(-27, 700,**pid)
@@ -240,7 +240,7 @@ async def coral():
 async def massive():
     debug= False
     pid = {"kp": 1, "ki": 0, "kd": 0.0}
-    await ilan.drive_straight(52,700, **pid)
+    await ilan.drive_straight(52,700)
     await ilan.wait_for_button(debug)
     await ilan.run_back_motor(100,175)
     await ilan.wait_for_button(debug)
@@ -250,7 +250,7 @@ async def massive():
     await ilan.wait_for_button(debug)
     # await ilan.drive_straight(-1.5,200)
     await ilan.wait_for_button(debug)
-    # await ilan.motor_back.run_time(-200,1000)
+    await ilan.motor_back.run_time(-200,1000)
     await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(200,-400)
     await wait(500) 
