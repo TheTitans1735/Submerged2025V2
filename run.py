@@ -273,7 +273,9 @@ async def massive():
 
 
 async def test():
-    await ilan.drive_straight(50,600,gradtual_start=False,gradual_stop=False)
+    await ilan.hub.display.animate([Icon.HAPPY,Icon.SAD],1000)
+    
+    
 
 async def test9():
    pid = {"kp": 1, "ki": 0, "kd": 0}
@@ -323,6 +325,7 @@ async def main():
                     ilan.hub.display.char(runs[current_run][0])
                 else:
                     ilan.hub.display.icon(runs[current_run][2])
+                    # ilan.hub.display.animate(runs[current_run][3])
 
             elif (Button.RIGHT in ilan.hub.buttons.pressed()):
                 current_run -= 1

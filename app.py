@@ -72,39 +72,45 @@ async def turn():
     await ilan.turn(-90, 150)
 
 async def prepare_whale_motor():
-    await ilan.run_back_motor(100,100)
+    # await ilan.run_back_motor(100,100)
     # await wait(1000)
     await ilan.run_back_motor(200,-290)
+
 
 @time_it
 async def whale():
     """
     ביצוע משימת הלוויתן.
     """
+    debug= True
     pid = {"kp":1, "ki":0, "kd": 0}
     ilan.drive_base.reset()
-    await ilan.drive_straight(19)
-    await ilan.turn(-15)
-    await multitask(ilan.drive_straight(50,700, **pid), prepare_whale_motor())
-    await ilan.wait_for_button(debug=False)
-    await ilan.turn(55)
-    await ilan.drive_straight(42,400,gradual_stop=False, **pid)
-    # await wait(1000)
-    await ilan.drive_straight(-2,700)
+    # await ilan.hub.speaker.beep(duration=700)
+
+    await ilan.drive_straight(28,850)
+    await ilan.wait_for_button(debug = False)    
+    await ilan.turn(-28)
+    await ilan.wait_for_button(debug = False)
+    await multitask(ilan.drive_straight(40,500, **pid), prepare_whale_motor())
+    await ilan.wait_for_button(debug = False)
+    await ilan.turn(74)
+    await ilan.wait_for_button(debug = False)
+    await ilan.drive_straight(32,800,gradual_stop=False, **pid)    # await wait(1000)
+    # await ilan.drive_straight(-2,700)
     # await ilan.wait_for_button()
     # await ilan.turn(3)
-    await ilan.drive_straight(4,200,gradual_stop=False, **pid)
+    # await ilan.drive_straight(4,200,gradual_stop=False, **pid)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(-30,100, **pid), ilan.motor_back.run_angle(250,-290))
+    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_angle(250,-290))
     await ilan.turn(120)
     # await ilan.wait_for_button()
-    await ilan.run_back_motor(250,216 )
+    await ilan.run_back_motor(250,183)
     # await ilan.motor_back.run_angle(150  ,140 )
-    await ilan.drive_straight(-20,150,**pid,)
+    await ilan.drive_straight(-27,900,**pid,)
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
-    await multitask(ilan.drive_straight(-9, **pid))
-    await ilan.run_back_motor(200, -105)        
+    # await multitask(ilan.drive_straight(-9, 900,**pid))
+    await ilan.run_back_motor(333,-275)        
     await ilan.drive_straight(19)
     # await ilan.wait_for_button(
     # )
@@ -240,10 +246,8 @@ async def massive():
 
 
 async def test():
-   await ilan.record_moves()
-   await ilan.generate_code()
-   await ilan.save_code()
-#    await ilan.drive_straight(52, **pid)
+    await ilan.hub.speaker.beep()
+    # await ilan.hub.display.animate(colection[Icon.house, Icon.SAD],interval=7000)
 
 async def test9():
    pid = {"kp": 1, "ki": 0, "kd": 0}
