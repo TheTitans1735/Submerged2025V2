@@ -55,6 +55,19 @@ class Robot:
         self.right__color_sensor = ColorSensor(Port.A)       
         self.drive_base.use_gyro(True)
         
+    async def buttery_status(self):
+
+        voltage = self.hub.battery.voltage()
+        print(f"{voltage=}")
+
+        if voltage> 8000:
+            self.hub.light.blink(Color.GREEN,[1000])
+        elif voltage> 7500:
+            self.hub.light.blink(Color.BLUE,[1000])
+        elif voltage> 7000:
+            self.hub.light.blink(Color.ORANGE,[1000])
+        else:
+            self.hub.light.blink(Color.RED,[1000])
 
     async def run_front_motor(self, speed, angle, wait=True):
         """

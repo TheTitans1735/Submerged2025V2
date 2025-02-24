@@ -84,49 +84,36 @@ async def whale():
     debug= True
     pid = {"kp":1, "ki":0, "kd": 0}
     ilan.drive_base.reset()
-    await ilan.drive_straight(28,700)
+
+    await multitask(ilan.drive_straight(28,850),prepare_whale_motor())
     await ilan.wait_for_button(debug = False)    
     await ilan.turn(-28)
     await ilan.wait_for_button(debug = False)
-    await multitask(ilan.drive_straight(40,700, **pid), prepare_whale_motor())
+    await ilan.drive_straight(40,500, **pid)
+    # await multitask(ilan.drive_straight(40,500, **pid), prepare_whale_motor())
     await ilan.wait_for_button(debug = False)
     await ilan.turn(74)
     await ilan.wait_for_button(debug = False)
-    await ilan.drive_straight(29,700,gradual_stop=False, **pid)
-    # await ilan.wait_for_button(debug)
-    # await wait(1000)
-    # await ilan.drive_straight(-2,700, **pid)
-    # await ilan.wait_for_button(debug)
-    # # await ilan.turn(3)
-    # # await ilan.wait_for_button(debug)
-    # await ilan.drive_straight(4,700,gradual_stop=False, **pid)
-    # # await ilan.wait_for_button(debug)
-    # # await ilan.wait_for_button()
-    # await multitask(ilan.drive_straight(-30,700,**pid), ilan.motor_back.run_angle(250,-290))
-    # await ilan.wait_for_button(debug)
-    # await ilan.turn(120)
-    # await ilan.wait_for_button(debug)
-    # # await ilan.wait_for_button()
-    # await ilan.run_back_motor(250,216 )
-    # await ilan.wait_for_button(debug)
-    # # await ilan.motor_back.run_angle(150  ,140 )
-    # await ilan.drive_straight(-20,700,**pid,)
-    # await ilan.wait_for_button(debug)
-    # # await ilan.turn(14)
-    # # await ilan.drive_straight(8)
-    # await multitask(ilan.drive_straight(-9,700, **pid))
-    # await ilan.wait_for_button(debug)
-    # await ilan.run_back_motor(200, -105)      
-    # await ilan.wait_for_button(debug)  
-    # await ilan.drive_straight(19,700)
-    # await ilan.wait_for_button(debug)
-    # # await ilan.wait_for_button(
-    # # )
-    # await ilan.turn(-15)
+    await ilan.drive_straight(32,800,gradual_stop=False, **pid)    # await wait(1000)
+    # await ilan.drive_straight(-2,700)
     # await ilan.wait_for_button()
-    # await multitask(ilan.drive_straight(55,700,gradual_stop=False ,**pid), ilan.run_back_motor(800,-290))
-    # await ilan.run_back_motor(200,290)
-
+    # await ilan.turn(3)
+    # await ilan.drive_straight(4,200,gradual_stop=False, **pid)
+    # await ilan.wait_for_button()
+    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_angle(250,-290))
+    await ilan.turn(120)
+    # await ilan.wait_for_button()
+    await ilan.run_back_motor(250,183)
+    # await ilan.motor_back.run_angle(150  ,140 )
+    await ilan.drive_straight(-27,900,**pid,)
+    # await ilan.turn(14)
+    # await ilan.drive_straight(8)
+    # await multitask(ilan.drive_straight(-9, 900,**pid))
+    await ilan.run_back_motor(333,-275)        
+    await ilan.drive_straight(19)
+    # await ilan.wait_for_button(
+    # )
+    await ilan.turn(-15)
 async def sonar():
     await ilan.drive_straight(-30,300)
     await ilan.turn(80,200)
@@ -211,7 +198,7 @@ async def green():
     await ilan.wait_for_button(Debug)
     await wait(100)
     await ilan.drive_straight(20, 700, **pid)
-    await ilan.wait_for_button()
+    await ilan.wait_for_button(Debug)
     await ilan.drive_straight(-14, 700, **pid)
     await ilan.turn(135, 150)
     await ilan.drive_straight(-27, 700,**pid)
@@ -225,10 +212,11 @@ async def green():
     await ilan.motor_back.run_time(-700,1500)
     await ilan.wait_for_button(Debug)
     await ilan.motor_back.run_time(500,1500)
-    await ilan.wait_for_button(Debug)
-    await ilan.drive_straight(7,700,gradual_stop=False ,**pid)
+    # await ilan.wait_for_button(Debug)
+    # await ilan.drive_straight(7,500,gradual_stop=False ,**pid)
+    await ilan.drive_straight(7,700)
     await ilan.turn(35)
-    await ilan.drive_straight(70,700,gradual_stop=False)
+    await ilan.drive_straight1_with_pid(11,300)
 
 
 @time_it
@@ -313,9 +301,13 @@ async def main():
         ("T", test), 
     ]
     current_run = 0
-    print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
-            
+    await ilan.buttery_status()     
+
+    buttery_status_timer = StopWatch()   
     while True:
+        if buttery_status_timer.time()> 10000:
+            await ilan.buttery_status()
+            buttery_status_timer.reset()
         try:
             if (Button.LEFT in ilan.hub.buttons.pressed()):
                 current_run += 1

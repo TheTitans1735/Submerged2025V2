@@ -87,30 +87,30 @@ async def whale():
     ilan.drive_base.reset()
     # await ilan.hub.speaker.beep(duration=700)
 
-    await ilan.drive_straight(28,850)
+    await multitask(ilan.drive_straight(28,850),prepare_whale_motor())
     await ilan.wait_for_button(debug = False)    
     await ilan.turn(-28)
     await ilan.wait_for_button(debug = False)
-    await multitask(ilan.drive_straight(40,500, **pid), prepare_whale_motor())
+    await ilan.drive_straight(40,500, **pid)
     await ilan.wait_for_button(debug = False)
     await ilan.turn(74)
     await ilan.wait_for_button(debug = False)
-    await ilan.drive_straight(32,800,gradual_stop=False, **pid)    # await wait(1000)
+    await ilan.drive_straight(32,650,gradual_stop=False, **pid)    # await wait(1000)
     # await ilan.drive_straight(-2,700)
     # await ilan.wait_for_button()
     # await ilan.turn(3)
     # await ilan.drive_straight(4,200,gradual_stop=False, **pid)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_angle(250,-290))
+    await multitask(ilan.drive_straight(-32,700, **pid), ilan.run_back_motor(250,-290))
     await ilan.turn(120)
     # await ilan.wait_for_button()
     await ilan.run_back_motor(250,183)
     # await ilan.motor_back.run_angle(150  ,140 )
-    await ilan.drive_straight(-27,900,**pid,)
+    await ilan.drive_straight(-25,900,**pid,)
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
     # await multitask(ilan.drive_straight(-9, 900,**pid))
-    await ilan.run_back_motor(333,-275)        
+    await ilan.run_back_motor(333,-20)        
     await ilan.drive_straight(19)
     # await ilan.wait_for_button(
     # )
@@ -246,7 +246,15 @@ async def massive():
 
 
 async def test():
-    await ilan.hub.speaker.beep()
+    # await ilan.hub.speaker.beep()
+    voltage = ilan.hub.battery.voltage()
+    await ilan.hub.display.text(str(voltage))
+    if voltage > 7500:
+        await ilan.hub.display.icon(Icon.HAPPY)
+        await wait(1000)
+    else:
+        await ilan.hub.display.icon(Icon.SAD)
+        await wait(2000)
     # await ilan.hub.display.animate(colection[Icon.house, Icon.SAD],interval=7000)
 
 async def test9():
@@ -285,9 +293,13 @@ async def main():
         ("T", test), 
     ]
     current_run = 0
-    print("current", ilan.hub.battery.current(), "voltage", ilan.hub.battery.voltage())
-            
+    await ilan.buttery_status()     
+
+    buttery_status_timer = StopWatch()   
     while True:
+        if buttery_status_timer.time()> 10000:
+            await ilan.buttery_status()
+            buttery_status_timer.reset()
         try:
             if (Button.LEFT in ilan.hub.buttons.pressed()):
                 current_run += 1
