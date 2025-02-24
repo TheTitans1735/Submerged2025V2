@@ -100,7 +100,7 @@ class Robot:
         self.hub.light.blink(Color.MAGENTA,[1000])
         while not self.hub.buttons.pressed():
             await wait(10)
-        self.hub.light.on(Color.BLUE)
+        self.buttery_status()
     
     async def drive_until_both_on_line(self, threshold=20, speed=200):
         """
