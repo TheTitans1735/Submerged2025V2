@@ -227,7 +227,7 @@ async def massive():
     # await ilan.drive_straight(-1.5,200)
     await ilan.wait_for_button(debug)
     await ilan.motor_back.run_time(-200,1000)
-    await ilan.wait_for_button()
+    # await ilan.wait_for_button()
     await ilan.motor_front.run_angle(200,-400)
     await wait(500) 
     await ilan.wait_for_button(debug)

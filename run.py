@@ -105,7 +105,7 @@ async def whale():
     await ilan.turn(120)
 
     # await ilan.wait_for_button()
-    await ilan.run_back_motor(120,237)
+    await ilan.run_back_motor(120,220)
     # await ilan.wait_for_button()
 
     # await ilan.motor_back.run_angle(150  ,140 )
@@ -114,7 +114,7 @@ async def whale():
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
     # await multitask(ilan.drive_straight(-9, 900,**pid))
-    await ilan.run_back_motor(333,-110)  
+    await ilan.run_back_motor(150,-110)  
     # await ilan.wait_for_button()      
     await ilan.drive_straight(19)
     # await ilan.wait_for_button()
