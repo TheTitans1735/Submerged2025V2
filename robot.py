@@ -152,6 +152,33 @@ class Robot:
                 print("Aligned to the line!")
                 break
     
+    async def drive_straight_1(
+        self, 
+        distance_cm, 
+        target_speed=1000, 
+        stop_at_end=True, 
+        timeout_seconds=None, 
+        gradual_stop=True, 
+        gradtual_start=True,
+        # kp=1, 
+        # ki=0, 
+        # kd=0,
+    ):
+        acceleration_rate=target_speed/2 if gradtual_start else target_speed
+        deceleration_rate=target_speed/2 if gradual_stop else target_speed
+        #2025-02-12 rotem remark settings
+        self.drive_base.settings(
+            straight_speed=target_speed, 
+            straight_acceleration=(acceleration_rate, deceleration_rate), 
+            turn_rate=None, 
+            turn_acceleration=None,
+        )
+
+        await self.drive_base.straight(
+            distance=distance_cm*10,
+            then=Stop.HOLD if stop_at_end else Stop.NONE,
+            wait=True,
+        )
     async def drive_straight(
         self, 
         distance_cm, 

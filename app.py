@@ -175,35 +175,37 @@ async def crabs():
     await ilan.turn(20,150)
     await ilan.drive_straight(-40,900, kp = 0, ki = 0, kd = 0)
 
+
 @time_it
 async def green():
-    pid = {"kp": 1, "ki": 0, "kd": 0}
+    # pid = {"kp": 1, "ki": 0, "kd": 0}
     Debug = False
     await ilan.turn(23,100)
     # await ilan.wait_for_button(Debug)
-    await ilan.drive_straight(48,200, **pid)
+    await ilan.drive_straight_1(48, 700)
     await ilan.turn(65,150)
     await ilan.wait_for_button(Debug)
     await wait(100)
-    await ilan.drive_straight(20,200, **pid)
-    await ilan.drive_straight(-14,200, **pid)
-    await ilan.turn(135, 150)
-    await ilan.drive_straight(-27,100,**pid)
+    await ilan.drive_straight_1(20, 700)
+    await ilan.wait_for_button(Debug)
+    await ilan.drive_straight_1(-14, 700)
+    await ilan.turn(130, 150)
+    await ilan.drive_straight_1(-27, 700)
     await ilan.wait_for_button(Debug)
     await ilan.turn(-40,100)
     await ilan.wait_for_button(Debug)
-    await ilan.drive_straight(-18,200,gradual_stop=True, **pid)
+    await ilan.drive_straight_1(-18, 700,gradual_stop=True)
     await ilan.wait_for_button(Debug)
-    await ilan.drive_straight(1,300)
+    await ilan.drive_straight(3, 700)
     await ilan.wait_for_button(Debug)
     await ilan.motor_back.run_time(-700,1500)
     await ilan.wait_for_button(Debug)
     await ilan.motor_back.run_time(500,1500)
-    await ilan.wait_for_button(Debug)
-    await ilan.drive_straight(7,700,gradual_stop=False ,**pid)
+    # await ilan.wait_for_button(Debug)
+    # await ilan.drive_straight(7,500,gradual_stop=False ,**pid)
+    await ilan.drive_straight(7,700)
     await ilan.turn(35)
-    await ilan.drive_straight(60,700,gradual_stop=False)
-
+    await ilan.drive_straight(75,700)
 
 @time_it
 async def coral():
@@ -225,7 +227,7 @@ async def massive():
     # await ilan.drive_straight(-1.5,200)
     await ilan.wait_for_button(debug)
     await ilan.motor_back.run_time(-200,1000)
-    await ilan.wait_for_button(debug)
+    await ilan.wait_for_button()
     await ilan.motor_front.run_angle(200,-400)
     await wait(500) 
     await ilan.wait_for_button(debug)

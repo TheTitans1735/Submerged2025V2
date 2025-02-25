@@ -84,41 +84,41 @@ async def whale():
     debug= True
     pid = {"kp":1, "ki":0, "kd": 0}
     ilan.drive_base.reset()
-    # await ilan.hub.speaker.beep(duration=700)
 
     await multitask(ilan.drive_straight(28,850),prepare_whale_motor())
     await ilan.wait_for_button(debug = False)    
     await ilan.turn(-28)
     await ilan.wait_for_button(debug = False)
     await ilan.drive_straight(40,500, **pid)
+    # await multitask(ilan.drive_straight(40,500, **pid), prepare_whale_motor())
     await ilan.wait_for_button(debug = False)
-    await ilan.turn(74)
-    await ilan.wait_for_button(debug = False)
-    await ilan.drive_straight(32,650,gradual_stop=False, **pid)    # await wait(1000)
+    await ilan.turn(70)
+    # await ilan.wait_for_button(debug )
+    await ilan.drive_straight(29,800,gradual_stop=False, **pid)
+    await wait(500)
     # await ilan.drive_straight(-2,700)
     # await ilan.wait_for_button()
     # await ilan.turn(3)
     # await ilan.drive_straight(4,200,gradual_stop=False, **pid)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(-32,700, **pid), ilan.run_back_motor(250,-290))
-    await ilan.turn(125)
+    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_angle(250,-290))
+    await ilan.turn(120)
+
     # await ilan.wait_for_button()
-    await ilan.run_back_motor(250,280)
+    await ilan.run_back_motor(120,237)
     # await ilan.wait_for_button()
+
     # await ilan.motor_back.run_angle(150  ,140 )
-    await ilan.drive_straight(-25,900,**pid,)
+    await ilan.drive_straight(-27,900,**pid,)
+    # await ilan.wait_for_button()
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
     # await multitask(ilan.drive_straight(-9, 900,**pid))
-    await ilan.run_back_motor(333,-25)        
+    await ilan.run_back_motor(333,-110)  
+    # await ilan.wait_for_button()      
     await ilan.drive_straight(19)
-    # await ilan.wait_for_button(
-    # )
-    await ilan.turn(-15)
     # await ilan.wait_for_button()
-    # await multitask(ilan.drive_straight(55,700,gradual_stop=False ,**pid), ilan.run_back_motor(800,-290))
-    # await ilan.run_back_motor(200,290)
-
+    await ilan.turn(-15)
 async def sonar():
     await ilan.drive_straight(-30,300)
     await ilan.turn(80,200)
@@ -221,7 +221,7 @@ async def green():
     # await ilan.drive_straight(7,500,gradual_stop=False ,**pid)
     await ilan.drive_straight(7,700)
     await ilan.turn(35)
-    await ilan.drive_straight(71,700)
+    await ilan.drive_straight(11,700)
 
 
 @time_it
