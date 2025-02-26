@@ -76,6 +76,7 @@ class Robot:
         :param angle: הזווית שאליה יש להפעיל את המנוע.
         :param wait: האם להמתין עד שהמנוע יגיע לזווית היעד.
         """
+        speed=110
         self.motor_front.reset_angle(angle=0)
         await self.motor_front.run_target(speed, target_angle=angle, then=Stop.HOLD, wait=wait)
         
