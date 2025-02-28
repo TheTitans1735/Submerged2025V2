@@ -73,8 +73,8 @@ async def turn():
 
 async def prepare_whale_motor():
     # await ilan.run_back_motor(100,100)
-    # await wait(1000)
-    await ilan.run_back_motor(200,-100)
+    await wait(1000)
+    await ilan.run_back_motor(200,-290)
 
 
 @time_it
@@ -102,12 +102,12 @@ async def whale():
     # await ilan.turn(3)
     # await ilan.drive_straight(4,200,gradual_stop=False, **pid)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_angle(250,-80))
+    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_time(-250,1500))
     await ilan.turn(120)
 
     # await ilan.wait_for_button()
-    await ilan.run_back_motor(120,80)
-    # await ilan.wait_for_button()
+    await ilan.run_back_motor(120,250)
+    await ilan.wait_for_button(debug=False)
 
     # await ilan.motor_back.run_angle(150  ,140 )
     await ilan.drive_straight(-27,900,**pid,)
@@ -115,7 +115,7 @@ async def whale():
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
     # await multitask(ilan.drive_straight(-9, 900,**pid))
-    await ilan.run_back_motor(150,-40)  
+    await ilan.run_back_motor(150,-100)  
     # await ilan.wait_for_button()      
     await ilan.drive_straight(19)
     # await ilan.wait_for_button()
@@ -133,12 +133,12 @@ async def pick_up():
     pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
     await ilan.drive_straight(46 ,750,gradual_stop=False)
     await ilan.drive_straight(-14)
-    await ilan.run_front_motor(310,300)
+    await ilan.run_front_motor(310,700)
     await ilan.turn(42,100 )
     await ilan.drive_straight(41, **pid)
     await ilan.turn(35)
     await ilan.drive_straight(12, **pid)
-    await ilan.run_front_motor(200,-300)
+    await ilan.run_front_motor(200,-700)
     await ilan.drive_straight(-20,450, **pid)
     await ilan.turn(-65)
     await ilan.drive_straight(-65,700, **pid,gradual_stop=False)
