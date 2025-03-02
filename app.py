@@ -133,20 +133,20 @@ async def pick_up():
     pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
     await ilan.drive_straight(46 ,750,gradual_stop=False)
     await ilan.drive_straight(-14)
-    await ilan.run_front_motor(250,150)
+    await ilan.motor_front.run_angle(700,250)
     await ilan.turn(42,100 )
     await wait(100)
     await ilan.drive_straight(41)
     await ilan.turn(35)
     await ilan.drive_straight(12)
-    await ilan.run_front_motor(250,-150)
+    await ilan.motor_front.run_angle(700,-250)
     await ilan.drive_straight(-20,700)
     await ilan.turn(-30,350)
     # await ilan.wait_for_button()
-    await ilan.drive_straight(-23,700)
-    await ilan.wait_for_button(debug=False)
+    await ilan.drive_straight(-21,700)
+    await ilan.wait_for_button()
     await ilan.turn(215,150)
-    await ilan.wait_for_button(debug=False)
+    await ilan.wait_for_button()
     await ilan.drive_straight(-34,400)
     await ilan.wait_for_button(debug=False)
     await ilan.turn(50,500)
@@ -276,13 +276,15 @@ async def test():
     #     await ilan.hub.display.icon(Icon.SAD)
     #     await wait(2000)
     # # await ilan.hub.display.animate(colection[Icon.house, Icon.SAD],interval=7000)
-    await ilan.run_back_motor(100,-100)
-    await wait(1000)
-    await ilan.run_back_motor(100,-50)
-    await ilan.run_back_motor(100,50)
+    await ilan.motor_back.run_angle(700,-720)
+    await ilan.drive_straight(-7,700)
+    # await wait(1000)
+    # await ilan.run_back_motor(100,-50)
+    # await ilan.run_back_motor(100,50)
 async def test9():
-   pid = {"kp": 1, "ki": 0, "kd": 0}
-   await ilan.drive_straight(52,300, **pid)
+   
+
+   await ilan(15,300,timeout_seconds=100)
 
 async def test8():
    pid = {"kp": 1, "ki": 0, "kd": 0}
