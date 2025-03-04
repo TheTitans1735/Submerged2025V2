@@ -424,3 +424,9 @@ class Robot:
         
         # Stop the drive base
         self.drive_base.stop()
+
+
+    async def curve(self, radius, angle,speed, then =Stop.HOLD, wait = True):
+        self.drive_base.reset
+        self.drive_base.settings(speed,None,None,None)
+        await self.drive_base.curve(radius,angle,then ,wait)

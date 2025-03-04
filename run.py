@@ -3,7 +3,7 @@ from pybricks.pupdevices import Motor
 from pybricks.robotics import DriveBase
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
-from pybricks.parameters import Icon, Color, Button, Direction
+from pybricks.parameters import Icon, Color, Button, Direction, Stop
 from robot import Robot,time_it
 # from pynput import keyboard
 # for ilan
@@ -73,8 +73,8 @@ async def turn():
 
 async def prepare_whale_motor():
     # await ilan.run_back_motor(100,100)
-    # await wait(1000)
-    await ilan.run_back_motor(200,-290)
+    await wait(1000)
+    await ilan.run_back_motor(200,-181)
 
 
 @time_it
@@ -102,12 +102,12 @@ async def whale():
     # await ilan.turn(3)
     # await ilan.drive_straight(4,200,gradual_stop=False, **pid)
     # await ilan.wait_for_button()
-    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_angle(250,-290))
+    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_time(-250,1500))
     await ilan.turn(120)
 
     # await ilan.wait_for_button()
-    await ilan.run_back_motor(120,220)
-    # await ilan.wait_for_button()
+    await ilan.run_back_motor(120,165)
+    await ilan.wait_for_button(debug=False)
 
     # await ilan.motor_back.run_angle(150  ,140 )
     await ilan.drive_straight(-27,900,**pid,)
@@ -115,7 +115,7 @@ async def whale():
     # await ilan.turn(14)
     # await ilan.drive_straight(8)
     # await multitask(ilan.drive_straight(-9, 900,**pid))
-    await ilan.run_back_motor(150,-110)  
+    await ilan.run_back_motor(150,-60)  
     # await ilan.wait_for_button()      
     await ilan.drive_straight(19)
     # await ilan.wait_for_button()
@@ -129,34 +129,22 @@ async def sonar():
     await ilan.run_back_motor(150,-210)
     await ilan.drive_straight(-53,10)
     await ilan.run_back_motor(300,-90)
+
 async def pick_up():
-    pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
-    await ilan.drive_straight(46 ,750,gradual_stop=False)
-    await ilan.drive_straight(-14)
-    await ilan.motor_front.run_angle(700,250)
+    # pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
+    await ilan.drive_straight(43 ,750,gradual_stop=False)
+    await ilan.drive_straight(-15)
+    await ilan.motor_front.run_angle(700,310)
     await ilan.turn(42,100 )
-    await wait(100)
     await ilan.drive_straight(41)
     await ilan.turn(35)
-    await ilan.drive_straight(12)
-    await ilan.motor_front.run_angle(700,-250)
-    await ilan.drive_straight(-20,700)
-    await ilan.turn(-30,350)
-    # await ilan.wait_for_button()
-    await ilan.drive_straight(-23,700)
-    await ilan.wait_for_button(debug=False)
-    await ilan.turn(215,150)
-    await ilan.wait_for_button(debug=False)
-    await ilan.drive_straight(-34,400)
-    await ilan.wait_for_button(debug=False)
-    await ilan.turn(50,500)
-    await ilan.wait_for_button()
-    await ilan.drive_straight(-10,850)
-    await ilan.turn(-90)
-    await ilan.wait_for_button()
-    await ilan.drive_straight(-20,300, **pid)
-    await ilan.turn(-65)
-    await ilan.drive_straight(-65,700, **pid,gradual_stop=False)
+    await ilan.drive_straight(14)
+    await ilan.motor_front.run_angle(-700,310)
+    await ilan.curve(-600,50,-700,Stop.NONE)
+    # ilan.drive_base.settings(-700,None,None,None)
+    # await ilan.drive_base.curve(-400,50,Stop.NONE)
+    await ilan.drive_straight(-45,700)
+    
 @time_it
 async def banana():
     pid = {"kp":0.9, "ki": 0, "kd": 0}
@@ -221,14 +209,14 @@ async def green():
     await ilan.motor_back.run_time(500,1500)
     # await ilan.wait_for_button(Debug)
     # await ilan.drive_straight(7,500,gradual_stop=False ,**pid)
-    await ilan.drive_straight(7,700)
+    await ilan.drive_straight(6.5,700)
     await ilan.turn(35)
     await ilan.drive_straight(70,700)
 
 @time_it
 async def coral():
     await ilan.drive_straight(8,100)
-    await ilan.drive_straight(-8,gradual_start=False,gradual_stop=False)
+    await ilan.drive_straight(-8,100)
 
 @time_it
 async def massive():
@@ -268,16 +256,8 @@ async def massive():
 
 async def test():
     # await ilan.hub.speaker.beep()
-    voltage = ilan.hub.battery.voltage()
-    await ilan.hub.display.text(str(voltage))
-    if voltage > 7500:
-        await ilan.hub.display.icon(Icon.HAPPY)
-        await wait(1000)
-    else:
-        await ilan.hub.display.icon(Icon.SAD)
-        await wait(2000)
-    # await ilan.hub.display.animate(colection[Icon.house, Icon.SAD],interval=7000)
-
+    ilan.drive_base.settings(-700,None,None,None)
+    await ilan.drive_base.curve(-400,50)
 async def test9():
    pid = {"kp": 1, "ki": 0, "kd": 0}
    await ilan.drive_straight(52,300, **pid)
