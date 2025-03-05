@@ -159,20 +159,19 @@ async def sonar():
     # await ilan.drive_straight(-65,700, **pid,gradual_stop=False)
 
 async def pick_up():
-    # pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
-    await ilan.drive_straight(41 ,750,gradual_stop=False)
-    await ilan.drive_straight(-17)
-    await ilan.motor_front.run_angle(700,310)
+    # pid = { "kp": 3, "ki": 0.1, "kd": 0.01}    pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
+    await ilan.drive_straight(44 ,750,gradual_stop=False)
+    await ilan.drive_straight(-16)
+    await ilan.motor_front.run_angle(700,250)
     await ilan.turn(42,100 )
+    await wait(100)
     await ilan.drive_straight(41)
     await ilan.turn(35)
-    await ilan.drive_straight(14)
-    await ilan.motor_front.run_angle(-700,310)
-    await ilan.turn(20)
-    await ilan.curve(-460,50,-700,Stop.NONE)
-    # ilan.drive_base.settings(-700,None,None,None)
-    # await ilan.drive_base.curve(-400,50,Stop.NONE)
-    await ilan.drive_straight(-45,700)
+    await ilan.drive_straight(12)
+    await ilan.motor_front.run_angle(700,-250)
+    await ilan.drive_straight(-20,700)
+    await ilan.turn(-30,350)
+
 @time_it
 async def banana():
     pid = {"kp":0.9, "ki": 0, "kd": 0}
