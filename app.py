@@ -200,17 +200,17 @@ async def banana():
 @time_it
 async def crabs():
     # await ilan.run_back_motor(-200,200)
-    await ilan.drive_straight(-107,800, gradual_start=False, kp = 0, ki = 0, kd = 0)
+    await ilan.drive_straight(-107,800)
     await ilan.motor_back.run_time(200,2500)
-    await ilan.drive_straight(12,120, kp = 0, ki = 0, kd = 0)
-    await multitask(ilan.drive_straight(25,450, kp = 0, ki = 0, kd = 0), ilan.run_back_motor(200, -100))
+    await ilan.drive_straight(12,120)
+    await ilan.turn(5)
+    await multitask(ilan.drive_straight(25,650), ilan.run_back_motor(200, -100))
     await ilan.turn(-31,100)
-    await ilan.drive_straight(-35,450, kp = 0, ki = 0, kd = 0)
-    await ilan.turn(29,50)
-    await ilan.drive_straight(-50,450, kp = 0, ki = 0, kd = 0)
-    await ilan.turn(20,150)
-    await ilan.drive_straight(-40,900, kp = 0, ki = 0, kd = 0)
-
+    await ilan.drive_straight(-35,750)
+    await ilan.turn(24,50)
+    await ilan.drive_straight(-47,750)
+    await ilan.turn(25,550)
+    await ilan.drive_straight(-45,1000)
 
 @time_it
 async def green():
@@ -252,13 +252,13 @@ async def coral():
 async def massive():
     debug= False
     # pid = {"kp": 1, "ki": 0, "kd": 0.0}
-    await ilan.drive_straight(52,700)
+    await ilan.drive_straight(52,1000)
     await ilan.wait_for_button(debug)
     await ilan.run_back_motor(100,175)
     await ilan.wait_for_button(debug)
     # await ilan.turn(-4,200)
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(14,700)
+    await ilan.drive_straight(14,500)
     await ilan.wait_for_button(debug)
     # await ilan.drive_straight(-1.5,200)
     await ilan.wait_for_button(debug)
@@ -281,7 +281,6 @@ async def massive():
     await ilan.wait_for_button(debug)
     await ilan.drive_straight(-80,700)
     await ilan.wait_for_button(debug)
-    # test7
 
 
 async def test():
@@ -296,9 +295,8 @@ async def test():
     #     await wait(2000)
     # # await ilan.hub.display.animate(colection[Icon.house, Icon.SAD],interval=7000)
     await ilan.motor_back.run_angle(700,-720)
-    await ilan.drive_straight(-7,700)
-    # await wait(1000)
-    # await ilan.run_back_motor(100,-50)
+    await ilan.drive_straight(-15,700)
+    await ilan.motor_back.run_angle(700,-720)    # await ilan.run_back_motor(100,-50)
     # await ilan.run_back_motor(100,50)
 async def test9():
    
@@ -379,7 +377,7 @@ async def main():
             print(e)
             raise e
         finally:
-            await wait(100)
+            await wait(150)
 
 
 run_task(main())
