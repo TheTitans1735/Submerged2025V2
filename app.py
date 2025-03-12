@@ -55,15 +55,6 @@ async def stop_all():
     ilan.motor_back.stop()
     ilan.motor_front.stop()
 
-async def nigg():
-    await ilan.drive_base.straight(320.50)
-    await wait(1000)
-    ilan.motor_back.dc(80)
-    await wait(1000)
-    ilan.motor_back.dc(-10)
-    await ilan.drive_base.straight(20)
-    await wait(1000)
-    await ilan.drive_base.straight(-350)
 
 async def turn():
     await ilan.turn(90,150)
@@ -72,7 +63,6 @@ async def turn():
     await ilan.turn(-90, 150)
 
 async def prepare_whale_motor():
-    # await ilan.run_back_motor(100,100)
     await wait(1000)
     await ilan.run_back_motor(200,-181)
 
@@ -91,30 +81,16 @@ async def whale():
     await ilan.turn(-28)
     await ilan.wait_for_button(debug = False)
     await ilan.drive_straight(40,500, **pid)
-    # await multitask(ilan.drive_straight(40,500, **pid), prepare_whale_motor())
     await ilan.wait_for_button(debug = False)
     await ilan.turn(70)
-    # await ilan.wait_for_button(debug )
     await ilan.drive_straight(29,800,gradual_stop=False, **pid)
     await wait(500)
-    # await ilan.drive_straight(-2,700)
-    # await ilan.wait_for_button()
-    # await ilan.turn(3)
-    # await ilan.drive_straight(4,200,gradual_stop=False, **pid)
-    # await ilan.wait_for_button()
     await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_time(-250,1500))
     await ilan.turn(120)
-
-    # await ilan.wait_for_button()
-    await ilan.run_back_motor(120,165)
+    await ilan.run_back_motor(50,165)
     await ilan.wait_for_button(debug=False)
 
-    # await ilan.motor_back.run_angle(150  ,140 )
     await ilan.drive_straight(-27,900,**pid,)
-    # await ilan.wait_for_button()
-    # await ilan.turn(14)
-    # await ilan.drive_straight(8)
-    # await multitask(ilan.drive_straight(-9, 900,**pid))
     await ilan.run_back_motor(150,-60)  
     # await ilan.wait_for_button()      
     await ilan.drive_straight(19)
@@ -173,8 +149,8 @@ async def pick_up():
     # await ilan.drive_straight(-20,700)
     # await ilan.turn(-30,350)
     ilan.drive_base.settings(-700,None,None,None)
-    await ilan.drive_base.curve(-400,95,Stop.NONE)
-    await ilan.drive_straight(-15,700)
+    await ilan.drive_base.curve(-400,60,Stop.NONE)
+    await ilan.drive_straight(-40,700)
 
 @time_it
 async def banana():
@@ -336,7 +312,6 @@ async def main():
     ]
     current_run = 0
     await ilan.buttery_status()     
-
     buttery_status_timer = StopWatch()   
     while True:
         if buttery_status_timer.time()> 10000:
