@@ -225,7 +225,7 @@ async def coral():
 async def massive():
     debug= False
     # pid = {"kp": 1, "ki": 0, "kd": 0.0}
-    await ilan.drive_straight(52,500)
+    await ilan.drive_straight(52,1000)
     await ilan.wait_for_button(debug)
     await ilan.run_back_motor(100,175)
     await ilan.wait_for_button(debug)
