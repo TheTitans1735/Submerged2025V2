@@ -256,7 +256,7 @@ async def massive():
     await ilan.turn(30)
     await ilan.wait_for_button(debug)
     await ilan.drive_straight(-80,700)
-    await ilan.wait_for_button(debug)
+    # await ilan.wait_for_button(debug)
 
 
 async def test():
@@ -305,7 +305,7 @@ async def main():
         ("2", back_motor),
         ("3", front_motor_reverse),
         ("4", back_motor_reverse),
-        (" ", nigg, Icon.CIRCLE),
+        # (" ", nigg, Icon.CIRCLE),
         (" ", turn, Icon.CLOCKWISE),
         (" ", sonar,Icon.HEART),
         ("T", test), 
