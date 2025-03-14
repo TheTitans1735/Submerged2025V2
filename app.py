@@ -25,44 +25,77 @@ ilan=Robot()
 # drive_base = DriveBase(left_motor,right_motor,57,10) 
 
 
-async def drive():   
+async def drive(): 
+    """
+    תכנית לנסיעה קדימה.
+    """  
     ilan.drive_base.drive(100,0)
 
 
 async def reverse_drive():
+    """
+    תכנית לנסיעה אחורה.
+    """
     ilan.drive_base.drive(-750, 0)
 
 async def turn_left():
+    """
+    תכנית לסיבוב שמאלה.
+    """
     ilan.drive_base.turn(-360, wait=False)
 
 async def turn_right():
+    """
+    תכנית לסיבוב ימינה.
+    """
     ilan.drive_base.turn(360, wait=False)
 
 async def front_motor():
+    """
+    תכנית להפעלת מנוע קדמי.
+    """
     ilan.motor_front.dc(50)
 
 async def back_motor():
+    """
+    תכנית להפעלת מנוע אחורי.
+    """
     ilan.motor_back.dc(100)
 
 async def front_motor_reverse():
+    """
+    תכנית להפעלת מנוע קדמי לאחור.
+    """
     ilan.motor_front.dc(-50)
     
 async def back_motor_reverse():
+    """
+    תכנית להפעלת מנוע אחורי לאחור.
+    """
     ilan.motor_back.dc(-100)
 
 async def stop_all():
+    """
+    תכנית לעצירת כל המנועים.
+    """
     ilan.drive_base.stop()
     ilan.motor_back.stop()
     ilan.motor_front.stop()
 
 
 async def turn():
+    """
+    תכנית לסיבוב.
+    """
     await ilan.turn(90,150)
     await ilan.wait_for_button(True)
     await wait(1000)
     await ilan.turn(-90, 150)
 
 async def prepare_whale_motor():
+    """
+    תכנית להכנת המנוע למשימת הלוויתן.
+    """
     await wait(1000)
     await ilan.run_back_motor(200,-181)
 
@@ -92,50 +125,24 @@ async def whale():
 
     await ilan.drive_straight(-27,900,**pid,)
     await ilan.run_back_motor(150,-60)  
-    # await ilan.wait_for_button()      
     await ilan.drive_straight(19)
-    # await ilan.wait_for_button()
     await ilan.turn(-15)
-    # await ilan.run_back_motor(200,290)
 
 async def sonar():
+    """"
+    פונקציה המבצעת את משימת ההאכילו את הלוויתן ותגלית סונאר.
+    """
     await ilan.drive_straight(-30,300)
     await ilan.turn(80,200)
     await ilan.drive_straight(-13)
     await ilan.run_back_motor(150,-210)
     await ilan.drive_straight(-53,10)
     await ilan.run_back_motor(300,-90)
-# async def pick_up():
-    # pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
-    # await ilan.drive_straight(46 ,750,gradual_stop=False)
-    # await ilan.drive_straight(-14)
-    # await ilan.motor_front.run_angle(700,250)
-    # await ilan.turn(42,100 )
-    # await wait(100)
-    # await ilan.drive_straight(41)
-    # await ilan.turn(35)
-    # await ilan.drive_straight(12)
-    # await ilan.motor_front.run_angle(700,-250)
-    # await ilan.drive_straight(-20,700)
-    # await ilan.turn(-30,350)
-    # # await ilan.wait_for_button()
-    # await ilan.drive_straight(-21,700)
-    # await ilan.wait_for_button()
-    # await ilan.turn(215,150)
-    # await ilan.wait_for_button()
-    # await ilan.drive_straight(-34,400)
-    # await ilan.wait_for_button(debug=False)
-    # await ilan.turn(50,500)
-    # await ilan.wait_for_button()
-    # await ilan.drive_straight(-10,850)
-    # await ilan.turn(-90)
-    # await ilan.wait_for_button()
-    # await ilan.drive_straight(-20,300, **pid)
-    # await ilan.turn(-65)
-    # await ilan.drive_straight(-65,700, **pid,gradual_stop=False)
 
 async def pick_up():
-    # pid = { "kp": 3, "ki": 0.1, "kd": 0.01}    pid = { "kp": 3, "ki": 0.1, "kd": 0.01}
+    """
+    מבצע את משימות מפגש בלתי צפוי, דגימת פלנקטון ואיסוף
+    """
     await ilan.drive_straight(41 ,670,gradual_stop=False)
     await ilan.drive_straight(-11,500)
     await ilan.motor_front.run_angle(700,250)
@@ -145,9 +152,6 @@ async def pick_up():
     await ilan.turn(35)
     await ilan.drive_straight(12)
     await ilan.motor_front.run_angle(700,-250)
-    # await ilan.wait_for_button()
-    # await ilan.drive_straight(-20,700)
-    # await ilan.turn(-30,350)
     ilan.drive_base.settings(-700,None,None,None)
     await ilan.drive_base.curve(-400,60,Stop.NONE)
     await ilan.drive_straight(-40,700)
@@ -155,7 +159,6 @@ async def pick_up():
 @time_it
 async def banana():
     pid = {"kp":0.9, "ki": 0, "kd": 0}
-    # await ilan.motor_back.run_angle(100,25)
     await ilan.drive_straight(47,200, gradual_stop= False, **pid)
     await ilan.drive_straight(-14,300, **pid)
     await ilan.run_front_motor(310,300)
@@ -166,16 +169,13 @@ async def banana():
     await ilan.motor_front.run_angle(200,-300)
     await ilan.drive_straight(-20, 450)
     await ilan.turn(-80)
-    # await ilan.wait_for_button()
     await ilan.drive_straight(-65, 500, gradual_start=False, gradual_stop=False)
-    # await ilan.wait_for_button()
-    # await ilan.turn(-67)
-    # await ilan.drive_straight(-10,260,**pid)
-    # # await ilan.wait_for_button()
 
 @time_it
 async def crabs():
-    # await ilan.run_back_motor(-200,200)
+    """
+    מבצע את משימת ספינת מחקר בית גידול מלאכותי ותיבה"
+    """
     await ilan.drive_straight(-107,800)
     await ilan.motor_back.run_time(200,2500)
     await ilan.drive_straight(12,120)
@@ -190,10 +190,11 @@ async def crabs():
 
 @time_it
 async def green():
-    # pid = {"kp": 1, "ki": 0, "kd": 0}
+    """
+    מבצע את משימת אוצרו של הקראקן, הרימו תורן, שונית האלמוגים ותליית הצוללן"
+    """
     Debug = False
     await ilan.turn(23,100)
-    # await ilan.wait_for_button(Debug)
     await ilan.drive_straight(48, 700)
     await ilan.turn(65,100)
     await ilan.wait_for_button(Debug)
@@ -213,37 +214,36 @@ async def green():
     await ilan.motor_back.run_time(-700,1500)
     await ilan.wait_for_button(Debug)
     await ilan.motor_back.run_time(500,1500)
-    # await ilan.wait_for_button(Debug)
-    # await ilan.drive_straight(7,500,gradual_stop=False ,**pid)
     await ilan.drive_straight(6.5,700)
     await ilan.turn(45)
     await ilan.drive_straight(77,700)
 
 @time_it
 async def coral():
+    """"
+    מבצע את משימת העמידו את האלמוגים
+    """
     await ilan.drive_straight(8,100)
     await ilan.drive_straight(-8)
 
 @time_it
 async def massive():
+    """
+    מבצע את משימת משתלת אלמוגים, כריש, צוללן ואיסוף"
+    """
     debug= False
-    # pid = {"kp": 1, "ki": 0, "kd": 0.0}
-    await ilan.drive_straight(52,700)
+    await ilan.drive_straight(52,500)
     await ilan.wait_for_button(debug)
     await ilan.run_back_motor(100,175)
     await ilan.wait_for_button(debug)
-    # await ilan.turn(-4,200)
     await ilan.wait_for_button(debug)
     await ilan.drive_straight(14,500)
     await ilan.wait_for_button(debug)
-    # await ilan.drive_straight(-1.5,200)
     await ilan.wait_for_button(debug)
     await ilan.motor_back.run_time(-200,1000)
-    # await ilan.wait_for_button()
     await ilan.motor_front.run_angle(200,-400)
     await wait(500) 
     await ilan.wait_for_button(debug)
-    #await ilan.turn(10,200)
     await ilan.wait_for_button(debug)
     await ilan.motor_front.run_angle(200,5)
     await ilan.wait_for_button(debug)
@@ -260,28 +260,13 @@ async def massive():
 
 
 async def test():
-    # # await ilan.hub.speaker.beep()
-    # voltage = ilan.hub.battery.voltage()
-    # await ilan.hub.display.text(str(voltage))
-    # if voltage > 7500:
-    #     await ilan.hub.display.icon(Icon.HAPPY)
-    #     await wait(1000)
-    # else:
-    #     await ilan.hub.display.icon(Icon.SAD)
-    #     await wait(2000)
-    # # await ilan.hub.display.animate(colection[Icon.house, Icon.SAD],interval=7000)
+    """"
+    פונקציה לבדיקת תכניות
+    """
     await ilan.motor_back.run_angle(700,-720)
     await ilan.drive_straight(-15,700)
-    await ilan.motor_back.run_angle(700,-720)    # await ilan.run_back_motor(100,-50)
-    # await ilan.run_back_motor(100,50)
-async def test9():
-   
+    await ilan.motor_back.run_angle(700,-720)
 
-   await ilan(15,300,timeout_seconds=100)
-
-async def test8():
-   pid = {"kp": 1, "ki": 0, "kd": 0}
-   await ilan.drive_straight(52,300, **pid)
 
 async def battery_check():
     pass
@@ -289,6 +274,9 @@ async def battery_check():
 
 # this is the main program
 async def main():
+    """"
+    פונקציה המבצעת את כל התכניות
+    """
     runs = [
         ("0", battery_check, Icon.TRIANGLE_UP),
         ("1", massive, Icon.LEFT),

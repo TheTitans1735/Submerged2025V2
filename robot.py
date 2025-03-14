@@ -56,6 +56,14 @@ class Robot:
         self.drive_base.use_gyro(True)
         
     async def buttery_status(self):
+        """
+        קריאה למצב הסוללה.
+
+        מעל 8000 - ירוק
+        מעל 7500 - כחול
+        מעל 7000 - כתום
+        מתחת 7000 - אדום
+        """
 
         voltage = self.hub.battery.voltage()
         print(f"{voltage=}")
@@ -153,62 +161,40 @@ class Robot:
                 print("Aligned to the line!")
                 break
     
-    async def drive_straight_1(
-        self, 
-        distance_cm, 
-        target_speed=1000, 
-        stop_at_end=True, 
-        timeout_seconds=None, 
-        gradual_stop=True, 
-        gradtual_start=True,
-        # kp=1, 
-        # ki=0, 
-        # kd=0,
-    ):
-        acceleration_rate=target_speed/2 if gradtual_start else target_speed
-        deceleration_rate=target_speed/2 if gradual_stop else target_speed
-        #2025-02-12 rotem remark settings
-        self.drive_base.settings(
-            straight_speed=target_speed, 
-            straight_acceleration=(acceleration_rate, deceleration_rate), 
-            turn_rate=None, 
-            turn_acceleration=None,
-        )
-
-        await self.drive_base.straight(
-            distance=distance_cm*10,
-            then=Stop.HOLD if stop_at_end else Stop.NONE,
-            wait=True,
-        )
     async def drive_straight(
         self, 
         distance_cm, 
         target_speed=1000, 
         stop_at_end=True, 
-        timeout_seconds=None, 
         gradual_stop=True, 
-        gradtual_start=True,
-        kp=1, 
-        ki=0, 
-        kd=0,
+        gradtual_start=True
     ):
+        """
+        נסיעה ישרה במרחק מסוים.
+        :param distance_cm: מרחק בס"מ.
+        :param target_speed: מהירות במעלות לשנייה.
+        :param stop_at_end: האם לעצור את המנועים בסיום.
+        :param gradual_stop: האם לבצע עצירה הדרגתית.
+        :param gradual_start: האם לבצע התחלה הדרגתית.
+        """
+        # קביעת המהירות והתאוצה
         acceleration_rate=target_speed/2 if gradtual_start else target_speed
         deceleration_rate=target_speed/2 if gradual_stop else target_speed
-        #2025-02-12 rotem remark settings
+        # הגדרת המהירות והתאוצה
         self.drive_base.settings(
             straight_speed=target_speed, 
             straight_acceleration=(acceleration_rate, deceleration_rate), 
             turn_rate=None, 
             turn_acceleration=None,
         )
-
+        # נסיעה ישרה
         await self.drive_base.straight(
             distance=distance_cm*10,
             then=Stop.HOLD if stop_at_end else Stop.NONE,
             wait=True,
         )
 
-    async def drive_straight1_with_pid(
+    async def drive_straight_with_pid_old(
         self, 
         distance_cm, 
         target_speed=300, 
@@ -281,51 +267,6 @@ class Robot:
         # Stop the motors
         if stop_at_end:
             self.drive_base.stop()
-
-    # async def arc_turn(self, radius_cm, angle_deg, speed=150):
-    #     """
-    #     Moves the robot in an arc with a specified radius (in cm) and angle (in degrees).
-    #     The radius is measured from the center of the robot to the midpoint between the wheels.
-    #     """
-    #     # Robot dimensions
-    #     wheel_diameter_mm = 57  # Diameter of the wheel in mm
-    #     axle_track_cm = 11.2  # Distance between the wheels in cm
-    #     gyro_offset_cm = 3.5  # Distance of gyro from wheel center
-    #     wheel_circumference_mm = wheel_diameter_mm * 3.14159  # Circumference of the wheel in mm
-
-    #     # Adjust the radius to account for the gyro's offset
-    #     effective_radius_cm = radius_cm - gyro_offset_cm
-
-    #     # Calculate the path lengths for the inner and outer wheels
-    #     outer_radius_cm = effective_radius_cm + (axle_track_cm / 2)
-    #     inner_radius_cm = effective_radius_cm - (axle_track_cm / 2)
-
-    #     # Circumferences of the outer and inner arcs
-    #     outer_arc_length_cm = (2 * 3.14159 * outer_radius_cm) * (angle_deg / 360)  # outer circumference * number of rounds
-    #     inner_arc_length_cm = (2 * 3.14159 * inner_radius_cm) * (angle_deg / 360)  # inner circumference * number of rounds
-
-    #     # Convert arc lengths to wheel rotations
-    #     outer_rotations = (outer_arc_length_cm * 10) / wheel_circumference_mm  # in rotations
-    #     inner_rotations = (inner_arc_length_cm * 10) / wheel_circumference_mm  # in rotations
-
-    #     # Calculate speed ratio
-    #     if outer_rotations != 0:  # Prevent division by zero
-    #         speed_ratio = inner_rotations / outer_rotations
-    #     else:
-    #         speed_ratio = 0
-
-    #     # Ensure both motors complete their movements together
-    #     if radius_cm > 0:  # Turning right
-    #         await self.right_motor.run_angle(speed * speed_ratio, inner_rotations * 360, wait=False)  # Inner wheel
-    #         await self.left_motor.run_angle(speed, outer_rotations * 360, wait=True)  # Outer wheel
-    #     else:  # Turning left
-    #         await self.left_motor.run_angle(speed * speed_ratio, inner_rotations * 360, wait=False)  # Inner wheel
-    #         await self.right_motor.run_angle(speed, outer_rotations * 360, wait=True)  # Outer wheel
-
-    #     self.left_motor.brake()
-    #     self.right_motor.brake()
-
-    #     print(f"Completed arc turn: Radius = {radius_cm} cm, Angle = {angle_deg}° (Adjusted for gyro offset).")
      
     async def turn(self, degrees, speed=150):
         """
@@ -379,54 +320,14 @@ class Robot:
         self.left_motor.stop()
         self.right_motor.stop()
 
-    async def arc_turn_with_distance(self, radius_cm, angle_deg, distance_cm, speed=150):
-        """
-        תנועה בקשת עם רדיוס מסוים (בס"מ), זווית (במעלות) ומרחק (בס"מ).
-        הרדיוס נמדד ממרכז הרובוט לנקודת האמצע בין הגלגלים.
-        :param radius_cm: רדיוס הקשת בס"מ.
-        :param angle_deg: זווית הקשת במעלות.
-        :param distance_cm: מרחק הנסיעה בס"מ.
-        :param speed: מהירות הנסיעה.
-        """
-        # Calculate the total arc length for the given distance
-        total_arc_length_cm = (2 * 3.14159 * radius_cm) * (angle_deg / 360)
-        
-        # Calculate the number of segments to divide the arc into
-        num_segments = int(distance_cm / total_arc_length_cm)
-        
-        for _ in range(num_segments):
-            await self.arc_turn(radius_cm, angle_deg, speed)
-        
-        # Calculate the remaining distance and turn
-        remaining_distance_cm = distance_cm % total_arc_length_cm
-        remaining_angle_deg = (remaining_distance_cm / total_arc_length_cm) * angle_deg
-        
-        await self.arc_turn(radius_cm, remaining_angle_deg, speed)
-
-
-    async def drive_with_turn(self, distance_cm, turn_rate, speed=150):
-        """
-        נסיעה קדימה תוך כדי סיבוב בקצב מסוים.
-        :param distance_cm: המרחק לנסיעה בסנטימטרים.
-        :param turn_rate: קצב הסיבוב במעלות לשנייה.
-        :param speed: מהירות הנסיעה במעלות לשנייה.
-        """
-        # Calculate the target distance in millimeters
-        target_distance_mm = distance_cm * 10
-        
-        # Reset the drive base
-        self.drive_base.reset()
-        
-        # Drive while turning until the target distance is reached
-        while abs(self.drive_base.distance()) < abs(target_distance_mm):
-            self.drive_base.drive(speed, turn_rate)
-            await wait(10)
-        
-        # Stop the drive base
-        self.drive_base.stop()
-
-
     async def curve(self, radius, angle,speed, then =Stop.HOLD, wait = True):
-        self.drive_base.reset
+        """
+        נסיעה בעיקול.
+        :param radius: רדיוס העיקול.
+        :param angle: הזווית שאליה יש לנסוע.
+        :param speed: מהירות הנסיעה.
+        :param then: פעולה לאחר הסיום."
+        """
+        self.drive_base.reset()
         self.drive_base.settings(speed,None,None,None)
         await self.drive_base.curve(radius,angle,then ,wait)
