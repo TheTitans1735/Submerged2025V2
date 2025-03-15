@@ -106,24 +106,24 @@ async def whale():
     ביצוע משימת הלוויתן.
     """
     debug= True
-    pid = {"kp":1, "ki":0, "kd": 0}
+
     ilan.drive_base.reset()
 
     await multitask(ilan.drive_straight(28,850),prepare_whale_motor())
     await ilan.wait_for_button(debug = False)    
     await ilan.turn(-28)
     await ilan.wait_for_button(debug = False)
-    await ilan.drive_straight(40,500, **pid)
+    await ilan.drive_straight(40,500)
     await ilan.wait_for_button(debug = False)
     await ilan.turn(70)
-    await ilan.drive_straight(29,800,gradual_stop=False, **pid)
+    await ilan.drive_straight(29,800,gradual_stop=False)
     await wait(500)
-    await multitask(ilan.drive_straight(-32,700, **pid), ilan.motor_back.run_time(-250,1500))
+    await multitask(ilan.drive_straight(-32,700), ilan.motor_back.run_time(-250,1500))
     await ilan.turn(120)
     await ilan.run_back_motor(50,165)
     await ilan.wait_for_button(debug=False)
 
-    await ilan.drive_straight(-27,900,**pid,)
+    await ilan.drive_straight(-27,900)
     await ilan.run_back_motor(150,-60)  
     await ilan.drive_straight(19)
     await ilan.turn(-15)
@@ -224,7 +224,9 @@ async def coral():
     מבצע את משימת העמידו את האלמוגים
     """
     await ilan.drive_straight(8,100)
-    await ilan.drive_straight(-8)
+    await ilan.drive_straight(-19)
+
+
 
 @time_it
 async def massive():
