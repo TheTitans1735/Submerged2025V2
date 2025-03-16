@@ -234,7 +234,7 @@ async def massive():
     מבצע את משימת משתלת אלמוגים, כריש, צוללן ואיסוף"
     """
     debug= False
-    await ilan.drive_straight(52,500)
+    await ilan.drive_straight(52,700)
     await ilan.wait_for_button(debug)
     await ilan.run_back_motor(100,175)
     await ilan.wait_for_button(debug)
@@ -257,7 +257,7 @@ async def massive():
     await ilan.wait_for_button(debug)
     await ilan.turn(30)
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(-80,700)
+    await ilan.drive_straight(-70,700)
     # await ilan.wait_for_button(debug)
 
 
