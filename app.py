@@ -105,24 +105,39 @@ async def whale():
     """
     ביצוע משימת הלוויתן.
     """
-    debug= True
-
+    debug= False
     ilan.drive_base.reset()
 
-    await multitask(ilan.drive_straight(28,850),prepare_whale_motor())
-    await ilan.wait_for_button(debug = False)    
+    # נסיעה קדימה ובמקביל הפעלת מנוע אחורי רק אחרי שהתרחקנו מהקיר
+    await multitask(
+        ilan.drive_straight(28,850),
+        prepare_whale_motor()
+    )
+    await ilan.wait_for_button(debug)    
     await ilan.turn(-28)
-    await ilan.wait_for_button(debug = False)
+    await ilan.wait_for_button(debug)
     await ilan.drive_straight(40,500)
-    await ilan.wait_for_button(debug = False)
+    await ilan.wait_for_button(debug)
+    # פניה אל הלוייתן
     await ilan.turn(70)
+    # נסיעה אל הלוייתן ללא האטה כדי להפיל את החסילונים
     await ilan.drive_straight(29,800,gradual_stop=False)
     await wait(500)
-    await multitask(ilan.drive_straight(-32,700), ilan.motor_back.run_time(-250,1500))
+    # חזרה אחורה ובמקביל סיבוב הזרוע שלא תיתקע במשימה 09
+    await multitask(
+        ilan.drive_straight(-32,700), 
+        ilan.motor_back.run_time(-250,1500)
+    )
     await ilan.turn(120)
+<<<<<<< HEAD
     await ilan.run_back_motor(50,175)
     await ilan.wait_for_button(debug=False)
 
+=======
+    await ilan.run_back_motor(100,165)
+    await ilan.wait_for_button(debug)
+    # חשיפת הלוייתנים במשימת הסונאר
+>>>>>>> e62f577 (refactor: improve whale task logic and remove unused banana function for clarity)
     await ilan.drive_straight(-27,900)
     await ilan.run_back_motor(150,-60)  
     await ilan.drive_straight(19)
@@ -159,21 +174,6 @@ async def pick_up():
     ilan.drive_base.settings(-700,None,None,None)
     await ilan.drive_base.curve(-300,60,Stop.NONE)
     await ilan.drive_straight(-40,700)
-
-@time_it
-async def banana():
-    pid = {"kp":0.9, "ki": 0, "kd": 0}
-    await ilan.drive_straight(47,200, gradual_stop= False, **pid)
-    await ilan.drive_straight(-14,300, **pid)
-    await ilan.run_front_motor(310,300)
-    await ilan.turn(40)
-    await ilan.drive_straight(42,230,**pid)
-    await ilan.turn(35)
-    await ilan.drive_straight(15,260,**pid)
-    await ilan.motor_front.run_angle(200,-300)
-    await ilan.drive_straight(-20, 450)
-    await ilan.turn(-80)
-    await ilan.drive_straight(-65, 500, gradual_start=False, gradual_stop=False)
 
 @time_it
 async def crabs():

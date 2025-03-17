@@ -102,6 +102,23 @@
             "env": {
                 "PYTHONUTF8": "1"
             }
+        },
+        {
+            "name": "sensor(gebetta)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pybricksdev",
+            "args": [
+                "run",
+                "ble",
+                "--name",
+                "YAHAV",
+                "sensor.py"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONUTF8": "1"
+            }
         }
     ]
 }
