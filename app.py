@@ -120,14 +120,18 @@ async def whale():
     await wait(500)
     await multitask(ilan.drive_straight(-32,700), ilan.motor_back.run_time(-250,1500))
     await ilan.turn(120)
-    await ilan.run_back_motor(50,165)
+    await ilan.run_back_motor(50,175)
     await ilan.wait_for_button(debug=False)
 
     await ilan.drive_straight(-27,900)
     await ilan.run_back_motor(150,-60)  
     await ilan.drive_straight(19)
     await ilan.turn(-15)
+    await ilan.drive_straight(60,700)
 
+async def RISH_RISH():
+    await ilan.drive_straight(72,1000)
+    await ilan.drive_straight(-63,1000)
 async def sonar():
     """"
     פונקציה המבצעת את משימת ההאכילו את הלוויתן ותגלית סונאר.
@@ -153,7 +157,7 @@ async def pick_up():
     await ilan.drive_straight(12)
     await ilan.motor_front.run_angle(700,-250)
     ilan.drive_base.settings(-700,None,None,None)
-    await ilan.drive_base.curve(-400,60,Stop.NONE)
+    await ilan.drive_base.curve(-300,60,Stop.NONE)
     await ilan.drive_straight(-40,700)
 
 @time_it
@@ -255,7 +259,7 @@ async def massive():
     await ilan.wait_for_button(debug)
     await ilan.drive_straight(-10,700)
     await ilan.wait_for_button(debug)
-    await ilan.turn(30)
+    await ilan.turn(25)
     await ilan.wait_for_button(debug)
     await ilan.drive_straight(-70,700)
     # await ilan.wait_for_button(debug)
@@ -287,6 +291,8 @@ async def main():
         ("4", pick_up, Icon.SAD),
         ("5", coral, Icon.PAUSE),
         ("7", whale, Icon.FULL),
+
+        (" ", RISH_RISH, Icon.HEART),
         (" ", drive, Icon.ARROW_LEFT),
         (" ", reverse_drive, Icon.ARROW_RIGHT),
         (" ", turn_left, Icon.ARROW_LEFT_DOWN),
