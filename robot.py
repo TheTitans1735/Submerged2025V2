@@ -50,9 +50,7 @@ class Robot:
         self.right_motor = Motor(Port.B)
         self.motor_front = Motor(Port.C)
         self.motor_back = Motor(Port.D)
-        self.drive_base = DriveBase(self.left_motor, self.right_motor,62.4,120) 
-        self.left_color_sensor = ColorSensor(Port.E)    
-        self.right__color_sensor = ColorSensor(Port.A)       
+        self.drive_base = DriveBase(self.left_motor, self.right_motor,62.4,120)  
         self.drive_base.use_gyro(True)
         
     async def buttery_status(self):
@@ -111,56 +109,7 @@ class Robot:
             await wait(10)
         self.buttery_status()
     
-    async def drive_until_both_on_line(self, threshold=20, speed=200):
-        """
-        נסיעה עד ששני החיישנים מזהים קו.
-        :param threshold: ערך זיהוי הקו.
-        :param speed: מהירות הנסיעה.
-        """
-        self.left_motor.run(speed)
-        self.right_motor.run(speed)
-
-        while True:
-            left_intensity = await self.left_color_sensor.reflection()        # קריאת חיישן שמאלי
-            right_intensity = await self.right__color_sensor.reflection()     # קריאת חיישן ימני            
-            print(f"Left: {left_intensity}, Right: {right_intensity}")  # דיבוג
-
-            if left_intensity < threshold: 
-                self.left_motor.stop()
-            if right_intensity < threshold:
-                self.right_motor.stop()
-
-            # אם שני החיישנים מזהים קו (ערכים מתחת לסף)
-            if left_intensity < threshold and right_intensity < threshold:
-                print("Both sensors detected the line!")
-                break
-
-    async def align_to_line(self, threshold=20, speed=100):
-        """
-        יישור הרובוט כך ששני החיישנים נמצאים על הקו.
-        :param threshold: ערך זיהוי הקו.
-        :param speed: מהירות התנועה.
-        """
-        while True:
-            left_intensity = self.left_color_sensor.reflection()
-            right_intensity = self.right__color_sensor.reflection()
-
-            # אם החיישן השמאלי לא מזהה קו, הנע את המנוע השמאלי
-            if left_intensity >= threshold:
-                self.left_motor.run(speed)
-            else:
-                self.left_motor.stop()
-
-            # אם החיישן הימני לא מזהה קו, הנע את המנוע הימני
-            if right_intensity >= threshold:
-                self.right_motor.run(speed)
-            else:
-                self.right_motor.stop()
-
-            if left_intensity < threshold and right_intensity < threshold:
-                print("Aligned to the line!")
-                break
-    
+   
     async def drive_straight(
         self, 
         distance_cm, 

@@ -107,8 +107,6 @@ async def whale():
     """
     debug= False
     ilan.drive_base.reset()
-
-    # נסיעה קדימה ובמקביל הפעלת מנוע אחורי רק אחרי שהתרחקנו מהקיר
     await multitask(
         ilan.drive_straight(28,850),
         prepare_whale_motor()
