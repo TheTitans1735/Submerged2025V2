@@ -3,12 +3,12 @@ from pybricks.hubs import PrimeHub
 from pybricks.pupdevices import Motor
 from pybricks.robotics import DriveBase
 from pybricks.parameters import Port, Stop
-from pybricks.tools import wait
 from pybricks.parameters import Icon, Color, Button, Direction
 from pybricks.pupdevices import Motor, ColorSensor
 from pybricks.tools import wait,StopWatch
 
-
+class RollExceededException(Exception):
+    pass
 # # Port A - Right color sensor
 # # Port B - Right wheel
 # # Port C - Medium motor - front
@@ -52,7 +52,8 @@ class Robot:
         self.motor_back = Motor(Port.D)
         self.drive_base = DriveBase(self.left_motor, self.right_motor,62.4,120)  
         self.drive_base.use_gyro(True)
-        
+        self.emergency_stop = False
+
     async def buttery_status(self):
         """
         קריאה למצב הסוללה.
@@ -280,3 +281,21 @@ class Robot:
         self.drive_base.reset()
         self.drive_base.settings(speed,None,None,None)
         await self.drive_base.curve(radius,angle,then ,wait)
+        
+        
+
+
+    # async def monitor_pitch(self):
+    #     """
+    #     עוקבת אחרי roll ועוצרת הכל אם הוא מעל 50 מעלות.
+    #     """
+    #     while True:
+    #         pitch, roll = self.hub.imu.tilt()
+    #         if abs(roll) >= 50:
+    #             print("Roll above 50! Stopping robot and returning to menu.")
+    #             self.drive_base.stop()
+    #             self.motor_back.stop()
+    #             self.motor_front.stop()
+    #             return  # פשוט יוצא מהפונקציה שקורית עכשיו
+    #         await wait(100)
+            

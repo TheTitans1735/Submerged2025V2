@@ -23,8 +23,8 @@ ilan=Robot()
 # motor_front = Motor(Port.C)
 # motor_back = Motor(Port.D)
 # drive_base = DriveBase(left_motor,right_motor,57,10) 
-
-
+class over_roll(Exception):
+    pass
 async def drive(): 
     """
     תכנית לנסיעה קדימה.
@@ -267,6 +267,16 @@ async def battery_check():
 
 
 # this is the main program
+
+async def monitor_roll(threshold=50):
+    while True:
+        pitch, roll = ilan.hub.imu.tilt()
+        if abs(roll) > threshold:
+            await stop_all()
+            raise over_roll(f"Roll exceeded: {roll}")
+        await wait(50)
+        
+        
 async def main():
     """"
     פונקציה המבצעת את כל התכניות
@@ -295,12 +305,14 @@ async def main():
     current_run = 0
     await ilan.buttery_status()     
     buttery_status_timer = StopWatch()   
+    
     while True:
         if buttery_status_timer.time()> 10000:
             await ilan.buttery_status()
             buttery_status_timer.reset()
         try:
-            if (Button.LEFT in ilan.hub.buttons.pressed()):
+            pressed = ilan.hub.buttons.pressed()
+            if Button.LEFT in pressed:
                 current_run += 1
                 if current_run >= len(runs):
                     current_run = 0
@@ -309,7 +321,7 @@ async def main():
                 else:
                     ilan.hub.display.icon(runs[current_run][2])
 
-            elif (Button.RIGHT in ilan.hub.buttons.pressed()):
+            elif Button.RIGHT in pressed:
                 current_run -= 1
                 if current_run < 0:
                     current_run = len(runs)-1
@@ -318,16 +330,19 @@ async def main():
                 else:
                     ilan.hub.display.icon(runs[current_run][2])
 
-            elif (Button.BLUETOOTH in ilan.hub.buttons.pressed()):
-                await runs[current_run][1]()
-
-                current_run += 1
-                if current_run >= len(runs):
-                    current_run = 0
-                if len(runs[current_run]) ==2:
-                    ilan.hub.display.char(runs[current_run][0])
-                else:
+            elif Button.BLUETOOTH in pressed:
+                try:
+                    await multitask(
+                        monitor_roll(),               
+                        runs[current_run][1]()        # מבצע את המשימה
+                    )
+                    current_run = (current_run + 1) % len(runs)
+                except over_roll as e:
+                    print(f"Roll too high! {e}")
+                if len(runs[current_run]) == 2:
                     ilan.hub.display.icon(runs[current_run][2])
+                else:
+                    ilan.hub.display.char(runs[current_run][0])
             else:
                 await stop_all()
         except Exception as e:
