@@ -29,7 +29,7 @@ async def drive():
     """
     תכנית לנסיעה קדימה.
     """  
-    ilan.drive_base.drive(100,0)
+    ilan.drive_on_button_bluetooth_stop(200)
 
 
 async def reverse_drive():
@@ -226,7 +226,8 @@ async def massive():
     מבצע את משימת משתלת אלמוגים, כריש, צוללן ואיסוף"
     """
     debug= False
-    await ilan.drive_straight(52,700)
+    await ilan.drive_straight(10,700,False)
+    await ilan.turn(90)
     await ilan.wait_for_button(debug)
     await ilan.run_back_motor(100,175)
     await ilan.wait_for_button(debug)
