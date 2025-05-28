@@ -25,12 +25,12 @@ ilan=Robot()
 # drive_base = DriveBase(left_motor,right_motor,57,10) 
 class over_roll(Exception):
     pass
+
 async def drive(): 
     """
     תכנית לנסיעה קדימה.
     """  
-    ilan.drive_on_button_bluetooth_stop(200)
-
+    ilan.drive_base.drive(750, 0)
 
 async def reverse_drive():
     """
@@ -215,7 +215,7 @@ async def coral():
     """"
     מבצע את משימת העמידו את האלמוגים
     """
-    await ilan.drive_straight(8,100)
+    await ilan.drive_straight(30,500)
     await ilan.drive_straight(-19)
 
 
@@ -267,90 +267,107 @@ async def battery_check():
     pass
 
 
-# this is the main program
 
-async def monitor_roll(threshold=50):
-    while True:
-        pitch, roll = ilan.hub.imu.tilt()
-        if abs(roll) > threshold:
-            await stop_all()
-            raise over_roll(f"Roll exceeded: {roll}")
-        await wait(50)
+pitch, roll = ilan.hub.imu.tilt()
+
         
-        
-async def main():
-    """"
+
+"""
     פונקציה המבצעת את כל התכניות
-    """
-    runs = [
-        ("0", battery_check, Icon.TRIANGLE_UP),
-        ("1", massive, Icon.LEFT),
-        ("2", green, Icon.FALSE), 
-        ("3", crabs, Icon.HAPPY),
-        ("4", pick_up, Icon.SAD),
-        ("5", coral, Icon.PAUSE),
-        ("7", whale, Icon.FULL),
-        (" ", drive, Icon.ARROW_LEFT),
-        (" ", reverse_drive, Icon.ARROW_RIGHT),
-        (" ", turn_left, Icon.ARROW_LEFT_DOWN),
-        (" ", turn_right, Icon.ARROW_LEFT_UP),
-        ("1", front_motor),
-        ("2", back_motor),
-        ("3", front_motor_reverse),
-        ("4", back_motor_reverse),
-        # (" ", nigg, Icon.CIRCLE),
-        (" ", turn, Icon.CLOCKWISE),
-        (" ", sonar,Icon.HEART),
-        ("T", test), 
-    ]
-    current_run = 0
-    await ilan.buttery_status()     
-    buttery_status_timer = StopWatch()   
-    
-    while True:
-        if buttery_status_timer.time()> 10000:
-            await ilan.buttery_status()
-            buttery_status_timer.reset()
-        try:
-            pressed = ilan.hub.buttons.pressed()
-            if Button.LEFT in pressed:
-                current_run += 1
-                if current_run >= len(runs):
-                    current_run = 0
-                if len(runs[current_run]) ==2:
-                    ilan.hub.display.char(runs[current_run][0])
+"""
+runs = [
+    # --- משימות עיקריות ---
+    ("0", battery_check, Icon.TRIANGLE_UP),
+    ("1", massive,       Icon.LEFT),
+    ("2", green,         Icon.FALSE),
+    ("3", crabs,         Icon.HAPPY),
+    ("4", pick_up,       Icon.SAD),
+    ("5", coral,         Icon.PAUSE),
+    ("7", whale,         Icon.FULL),
+    ("8", sonar,         Icon.HEART),
+
+    # --- פעולות נהיגה ---
+    (" ", drive,             Icon.ARROW_LEFT),
+    (" ", reverse_drive,     Icon.ARROW_RIGHT),
+    (" ", turn_left,         Icon.ARROW_LEFT_DOWN),
+    (" ", turn_right,        Icon.ARROW_LEFT_UP),
+    (" ", turn,              Icon.CLOCKWISE),
+
+    # --- שליטה במנועים ---
+    ("1", front_motor),
+    ("2", back_motor),
+    ("3", front_motor_reverse),
+    ("4", back_motor_reverse),
+
+    # --- בדיקות ופיתוח ---
+    ("T", test),
+]
+
+
+
+async def monitor_roll():
+        while True:
+            pitch, roll = ilan.hub.imu.tilt()
+            if abs(roll) > 50:
+                ilan.drive_base.stop()
+                ilan.motor_back.stop()
+                ilan.motor_front.stop()
+                raise over_roll(f"Roll exceeded: {roll}")
+            await wait(50)
+
+async def main():
+
+        current_run = 0
+        await ilan.buttery_status()
+        buttery_status_timer = StopWatch()
+
+        while True:
+            if buttery_status_timer.time() > 10000:
+                await ilan.buttery_status()
+                buttery_status_timer.reset()
+
+            try:
+                pressed = ilan.hub.buttons.pressed()
+
+                if Button.LEFT in pressed:
+                    current_run += 1
+                    if current_run >= len(runs):
+                        current_run = 0
+                    if len(runs[current_run]) == 2:
+                        ilan.hub.display.char(runs[current_run][0])
+                    else:
+                        ilan.hub.display.icon(runs[current_run][2])
+
+                elif Button.RIGHT in pressed:
+                    current_run -= 1
+                    if current_run < 0:
+                        current_run = len(runs) - 1
+                    if len(runs[current_run]) == 2:
+                        ilan.hub.display.char(runs[current_run][0])
+                    else:
+                        ilan.hub.display.icon(runs[current_run][2])
+
+                elif Button.BLUETOOTH in pressed:
+                    try:
+                        await multitask(runs[current_run][1](), monitor_roll())
+ 
+                        current_run = (current_run + 1) % len(runs)
+                    except over_roll as e:
+                        print(f"Roll too high! {e}")
+                        await stop_all()
+                        await wait(700)
+                    if len(runs[current_run]) == 2:
+                        ilan.hub.display.icon(runs[current_run][2])
+                    else:
+                        ilan.hub.display.char(runs[current_run][0])
                 else:
-                    ilan.hub.display.icon(runs[current_run][2])
+                    await stop_all()
 
-            elif Button.RIGHT in pressed:
-                current_run -= 1
-                if current_run < 0:
-                    current_run = len(runs)-1
-                if len(runs[current_run]) ==2:
-                    ilan.hub.display.char(runs[current_run][0])
-                else:
-                    ilan.hub.display.icon(runs[current_run][2])
+            except Exception as e:
+                print(e)
+                raise e
+            finally:
+                await wait(150)
 
-            elif Button.BLUETOOTH in pressed:
-                try:
-                    await multitask(
-                        monitor_roll(),               
-                        runs[current_run][1]()        # מבצע את המשימה
-                    )
-                    current_run = (current_run + 1) % len(runs)
-                except over_roll as e:
-                    print(f"Roll too high! {e}")
-                if len(runs[current_run]) == 2:
-                    ilan.hub.display.icon(runs[current_run][2])
-                else:
-                    ilan.hub.display.char(runs[current_run][0])
-            else:
-                await stop_all()
-        except Exception as e:
-            print(e)
-            raise e
-        finally:
-            await wait(150)
-
-
+    # מפעיל את הפונקציה הראשית
 run_task(main())

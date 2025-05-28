@@ -10,7 +10,7 @@
                 "run",
                 "ble",
                 "--name",
-                "Ilan Prime",
+                "ilan prime",
                 "app.py"
             ],
             "console": "integratedTerminal",
@@ -44,7 +44,7 @@
                 "run",
                 "ble",
                 "--name",
-                "Ilan Prime",
+                "ilan prime",
                 "app.py"
             ],
             "console": "integratedTerminal",
@@ -112,7 +112,7 @@
                 "run",
                 "ble",
                 "--name",
-                "Ilan Prime",
+                "ilan prime",
                 "sensor.py"
             ],
             "console": "integratedTerminal",

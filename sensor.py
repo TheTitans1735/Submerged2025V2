@@ -7,7 +7,6 @@ from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
 from robot import Robot,time_it,Stop
 ilan=Robot()
-from pybricks.parameters import Angle
 
 # async def stop_all():
 #     """
@@ -26,19 +25,7 @@ hub = PrimeHub()
 #     # Print the result.
 #     print(pitch, roll)
 #     wait(200)
-def my_function():
-        print("Pitch is greater than 60 degrees!")
-        ilan.drive_base.stop()
-        ilan.motor_front.stop()
-        ilan.motor_back.stop()
-async def hi():
-    while True:
-        pitch, _ = hub.imu.tilt()  # מקבל את ערך ה-pitch במעלות
-        if pitch > 60:
-            my_function()
-
-        ilan.drive_straight(15,1000)
-        hi()
+ilan.drive_base.drive()
 """
 controller = XboxController()
 
