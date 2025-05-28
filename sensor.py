@@ -1,31 +1,23 @@
-from pybricks.hubs import PrimeHub
-from pybricks.pupdevices import Motor
-from pybricks.iodevices  import XboxController
-from pybricks.robotics import DriveBase
+from pybricks.pupdevices import ColorSensor
 from pybricks.parameters import Port
-from pybricks.tools import wait, StopWatch, run_task, multitask
-from pybricks.parameters import Icon, Color, Button, Direction
-from robot import Robot,time_it,Stop
-ilan=Robot()
+from pybricks.tools import wait
 
-# async def stop_all():
-#     """
-#     תכנית לעצירת כל המנועים.
+# Initialize the sensor.
+sensor = ColorSensor(Port.A)
 
-#     """
-#     ilan.drive_base.stop()
-#     ilan.motor_front.stop()
-#     ilan.motor_back.stop()
-hub = PrimeHub()
+while True:
+    # Read the color and reflection
+    color = sensor.color()
+    reflection = sensor.reflection()
 
-# while True:
-#     # Read the tilt values.
-#     pitch, roll = hub.imu.tilt()
+    # Print the measured color and reflection.
+    print(color, reflection)
 
-#     # Print the result.
-#     print(pitch, roll)
-#     wait(200)
-ilan.drive_base.drive()
+    # Move the sensor around and see how
+    # well you can detect colors.
+
+    # Wait so we can read the value.
+    wait(100)
 """
 controller = XboxController()
 

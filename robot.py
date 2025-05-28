@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pybricks.hubs import PrimeHub
-from pybricks.pupdevices import Motor, ColorSensor
+from pybricks.pupdevices import Motor, ColorSensor,ForceSensor
 from pybricks.robotics import DriveBase
 from pybricks.parameters import Port, Stop, Icon, Color, Button, Direction
 from pybricks.tools import wait, StopWatch
@@ -43,6 +43,8 @@ class Robot:
         self.motor_front = Motor(Port.C)
         self.motor_back = Motor(Port.D)
         self.drive_base = DriveBase(self.left_motor, self.right_motor, 62.4, 120)
+        self.color_sensor = ColorSensor(Port.A)
+        # self.forcesensor = ForceSensor(Port)#.)
         self.drive_base.use_gyro(True)
         self.emergency_stop = False
 
@@ -165,3 +167,26 @@ class Robot:
     #             self.motor_front.stop()
     #             return
     #         await wait(100)
+    
+    
+    async def drive_until_pushed(
+        self, 
+        speed=750, 
+        timeout_seconds=None):
+        self.drive_base.drive(speed, 0)
+        while not self.forcesensor.pressed():
+            await wait(10)
+        self.drive_base.stop()
+        self.motor_front.stop()
+        self.motor_back.stop()
+        
+    async def drive_until_touched(
+        self,
+        speed=750, 
+        timeout_seconds=None):
+        self.drive_base.drive(speed, 0)
+        while not self.forcesensor.touched():
+            await wait(10)
+        self.drive_base.stop()
+        self.motor_front.stop()
+        self.motor_back.stop()

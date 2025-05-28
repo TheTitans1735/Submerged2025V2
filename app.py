@@ -255,20 +255,22 @@ async def massive():
 
 
 async def test():
-    """"
-    פונקציה לבדיקת תכניות
-    """
-    await ilan.motor_back.run_angle(700,-720)
-    await ilan.drive_straight(-15,700)
-    await ilan.motor_back.run_angle(700,-720)
+        ilan.drive_base.drive(120, 0)
 
 
 async def battery_check():
     pass
 
 
-
-pitch, roll = ilan.hub.imu.tilt()
+async def monitor_color_sensor():
+    while True:
+        pitch, roll = ilan.hub.imu.tilt()
+        if abs(roll) > 50:
+            ilan.drive_base.stop()
+            ilan.motor_back.stop()
+            ilan.motor_front.stop()
+            raise over_roll(f"Roll exceeded: {roll}")
+        await wait(50)
 
         
 
@@ -300,7 +302,7 @@ runs = [
     ("4", back_motor_reverse),
 
     # --- בדיקות ופיתוח ---
-    ("T", test),
+    ("T", monitor_color_sensor),
 ]
 
 
@@ -357,9 +359,9 @@ async def main():
                         await stop_all()
                         await wait(700)
                     if len(runs[current_run]) == 2:
-                        ilan.hub.display.icon(runs[current_run][2])
-                    else:
                         ilan.hub.display.char(runs[current_run][0])
+                    else:
+                        ilan.hub.display.icon(runs[current_run][2])
                 else:
                     await stop_all()
 
