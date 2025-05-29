@@ -77,11 +77,19 @@ class Robot:
             await wait(10)
         self.buttery_status()
 
-    async def drive_straight(self, distance_cm, target_speed=1000, stop_at_end=True, gradual_stop=True, gradtual_start=True):
+    async def drive_straight(self, distance_cm,
+                             target_speed=1000, 
+                             stop_at_end=True,
+                             gradual_stop=True,
+                             gradtual_start=True):
         acceleration_rate = target_speed / 2 if gradtual_start else target_speed
         deceleration_rate = target_speed / 2 if gradual_stop else target_speed
+        
         self.drive_base.settings(target_speed, (acceleration_rate, deceleration_rate), None, None)
         await self.drive_base.straight(distance_cm * 10, then=Stop.HOLD if stop_at_end else Stop.NONE, wait=True)
+        self.left_motor.stop()
+        self.right_motor.stop()
+        self.hub.imu.reset_heading(0)
 
     async def drive_straight_with_pid_old(self, distance_cm, target_speed=300, stop_at_end=True, timeout_seconds=None, gradual_stop=True, gradtual_start=True, kp=1, ki=0, kd=0):
         pid = PIDController(kp, ki, kd)
@@ -125,6 +133,8 @@ class Robot:
             self.drive_base.stop()
 
     async def turn(self, degrees, speed=150):
+        await wait(10)
+        self.drive_base.stop()  # <-- Stop driving before resetting heading
         self.hub.imu.reset_heading(0)
         if degrees > 0:
             self.left_motor.run(speed)
@@ -140,6 +150,7 @@ class Robot:
         self.right_motor.stop()
 
     async def turn_without_right_wheel(self, degrees, speed=150):
+        self.drive_base.stop()  # <-- Stop driving before resetting heading
         self.hub.imu.reset_heading(0)
         if degrees > 0:
             self.left_motor.run(speed)
@@ -190,3 +201,18 @@ class Robot:
         self.drive_base.stop()
         self.motor_front.stop()
         self.motor_back.stop()
+
+    async def drive_until_bluetooth(self, speed=500):
+        """
+        מתחיל לנסוע קדימה, ואם לוחצים על כפתור BLUETOOTH עוצר וחוזר לתפריט.
+        """
+        self.drive_base.drive(speed, 0)
+        while True:
+            pressed = self.hub.buttons.pressed()
+            if Button.BLUETOOTH in pressed:
+                self.drive_base.stop()
+                break
+            await wait(50)
+            
+class over_roll(Exception):
+    pass
