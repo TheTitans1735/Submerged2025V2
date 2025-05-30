@@ -1,5 +1,5 @@
 from pybricks.hubs import PrimeHub
-from pybricks.pupdevices import Motor
+from pybricks.pupdevices import Motor, ColorSensor, ForceSensor
 from pybricks.robotics import DriveBase
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
@@ -258,15 +258,15 @@ async def battery_check():
     pass
 
 
-async def monitor_color_sensor():
-    while True:
-        pitch, roll = ilan.hub.imu.tilt()
-        if abs(roll) > 50:
-            ilan.drive_base.stop()
-            ilan.motor_back.stop()
-            ilan.motor_front.stop()
-            raise over_roll(f"Roll exceeded: {roll}")
-        await wait(50)
+# async def monitor_force():
+#     while True:
+#         thouch, press = ilan.()
+#         if abs(roll) > 50:
+#             ilan.drive_base.stop()
+#             ilan.motor_back.stop()
+#             ilan.motor_front.stop()
+#             raise over_roll(f"Roll exceeded: {roll}")
+#         await wait(50)
 
         
 async def monitor_roll():
@@ -318,7 +318,7 @@ async def main_loop():
         ("4", back_motor_reverse),
 
         # --- בדיקות ופיתוח ---
-        ("T", monitor_color_sensor),
+        ("T", test, Icon.TRIANGLE_DOWN),
     ]
 
 

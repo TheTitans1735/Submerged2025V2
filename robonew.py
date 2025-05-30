@@ -1,4 +1,3 @@
-            
 # -*- coding: utf-8 -*-
 from pybricks.hubs import PrimeHub
 from pybricks.pupdevices import Motor, ColorSensor,ForceSensor
@@ -7,6 +6,8 @@ from pybricks.parameters import Port, Stop, Icon, Color, Button, Direction
 from pybricks.tools import wait, StopWatch
 
 class RollExceededException(Exception):
+    pass
+class over_roll(Exception):
     pass
 
 class PIDController:
@@ -36,6 +37,7 @@ def time_it(func):
     return wrapper
 
 
+
 class Robot:
     def __init__(self):
         self.hub = PrimeHub()
@@ -48,7 +50,7 @@ class Robot:
         self.forcesensor = ForceSensor(Port.E)
         self.drive_base.use_gyro(True)
         self.emergency_stop = False
-
+        
     async def buttery_status(self):
         voltage = self.hub.battery.voltage()
         print(f"{voltage=}")
@@ -214,5 +216,12 @@ class Robot:
                 self.drive_base.stop()
                 break
             await wait(50)
-class over_roll(Exception):
-    pass
+            
+    async def run_unti_force_perss(self):
+        self.drive_base.drive(500, 0)
+        while not self.forcesensor.pressed():
+            await wait(10)
+            self.drive_base.stop()
+            self.motor_front.stop()
+            self.motor_back.stop()
+            await wait(10)

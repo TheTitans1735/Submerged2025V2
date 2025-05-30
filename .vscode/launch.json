@@ -112,7 +112,7 @@
                 "run",
                 "ble",
                 "--name",
-                "ilan prime",
+                "YAHAV",
                 "sensor.py"
             ],
             "console": "integratedTerminal",
