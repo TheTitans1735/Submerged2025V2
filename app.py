@@ -5,6 +5,7 @@ from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
 from robot import Robot,time_it,Stop, over_roll
+    
 # from pynput import keyboard
 # for ilan
 # check change 
@@ -250,14 +251,17 @@ async def massive():
     # await ilan.wait_for_button(debug)
 
 
+            
 async def test():
-        ilan.drive_base.drive(120, 0)
+    await ilan.detect_color_and_run()
 
 
 async def battery_check():
     pass
 
-
+# async def print_force_sensor():
+#         print(f"press {await forcesensor.pressed(3)}-----------------touch {await forcesensor.touched()}")
+#         await wait(1000)
 # async def monitor_force():
 #     while True:
 #         thouch, press = ilan.()
@@ -292,6 +296,21 @@ async def monitor_roll():
 """
     פונקציה המבצעת את כל התכניות
 """
+color_to_function = {
+    Color.RED: massive,
+    Color.GREEN: green,
+    Color.BLUE: crabs,
+    Color.YELLOW: pick_up,
+    Color.WHITE: coral,
+}
+async def detect_color_and_run():
+    while True:
+        detected_color = await ilan.color_sensor.color()
+        if detected_color in color_to_function:
+            print(f"Detected: {detected_color}")
+        #     await color_to_function[detected_color]()  # קריאה לפונקציה המתאימה
+        #     break  # אפשר להסיר אם רוצים המשך זיהוי
+        # await wait(100)  # המתנה קצרה לפני קריאה נוספת
 async def main_loop():
     runs = [
         # --- משימות עיקריות ---
@@ -375,5 +394,5 @@ async def main_loop():
         finally:
             await wait(150)
 async def main():
-    await multitask(monitor_roll(),main_loop())
+    await multitask(monitor_roll(),main_loop(),)
 run_task(main())

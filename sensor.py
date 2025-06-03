@@ -9,8 +9,12 @@ from pybricks.parameters import Port
 from pybricks.tools import wait
 
 
-if ForceSensor(Port.E).pressed(True):
-    print("Waiting for force sensor to be pressed...")
+"""הדפסת ערכי חיישן כוח"""
 
+hub = PrimeHub()
+forcesensor = ForceSensor(Port.D)
+while True:
+    print(f"press {forcesensor.pressed()}-----------------touch {forcesensor.touched()}")
+    wait(1000)
 
-# print_force_sensor()
+"""הפעלת פונקציה להדפסת ערכי חיישן כוח"""

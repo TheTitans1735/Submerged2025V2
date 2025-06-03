@@ -253,8 +253,7 @@ async def massive():
 
 async def test():
 
-    await ilan.drive_until_button(500)
-
+    await ilan.drive_until_button(150)
 
 async def battery_check():
     pass
@@ -270,6 +269,42 @@ async def battery_check():
 #             raise over_roll(f"Roll exceeded: {roll}")
 #         await wait(50)
 
+
+"""
+    פונקציה המבצעת את כל התכניות
+"""
+color_to_function = {
+    Color.RED: massive,
+    Color.GREEN: green,
+    Color.BLUE: crabs,
+    Color.YELLOW: pick_up,
+    Color.WHITE: coral,
+}
+async def detect_color_and_run():
+    
+    while True:
+        
+        detected_color = await ilan.color_sensor.color()
+        print(f"Detected: {detected_color}")  # תמיד מדפיס את הצבע שזוהה
+
+        if detected_color == Color.RED:
+            await test()
+            break
+        elif detected_color == Color.GREEN:
+            await green()
+            break
+        elif detected_color == Color.BLUE:
+            await crabs()
+            break
+        elif detected_color == Color.YELLOW:
+            await pick_up()
+            break
+        elif detected_color == Color.WHITE:
+            await coral()
+            break
+
+        await wait(100)  # המתנה לפני קריאה נוספת
+    
         
 async def monitor_roll():
     roll_exceeded = False
@@ -283,17 +318,15 @@ async def monitor_roll():
                 ilan.drive_base.stop()
                 ilan.motor_back.stop()
                 ilan.motor_front.stop()
+                
+                
                 await stop_all()
                 await wait(100)
-                raise over_roll(f"Roll exceeded: {roll}")  # <--- הוספה כאן
             else:
-                roll_exceeded = False
+                roll_exceeded = False  # איפוס הדגל אם חזר לתחום התקין
         except Exception as e:
             print("Error in monitor_roll:", e)
         await wait(50)
-"""
-    פונקציה המבצעת את כל התכניות
-"""
 async def main_loop():
     runs = [
         # --- משימות עיקריות ---
@@ -320,7 +353,7 @@ async def main_loop():
         ("4", back_motor_reverse),
 
         # --- בדיקות ופיתוח ---
-        ("T", test),
+        ("T", detect_color_and_run),
     ]
 
 
@@ -377,5 +410,5 @@ async def main_loop():
         finally:
             await wait(150)
 async def main():
-    await multitask(monitor_roll(),main_loop())
+    await multitask(monitor_roll(),main_loop(),)
 run_task(main())

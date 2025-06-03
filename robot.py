@@ -1,11 +1,9 @@
-            
 # -*- coding: utf-8 -*-
 from pybricks.hubs import PrimeHub
 from pybricks.pupdevices import Motor, ColorSensor,ForceSensor
 from pybricks.robotics import DriveBase
 from pybricks.parameters import Port, Stop, Icon, Color, Button, Direction
 from pybricks.tools import wait, StopWatch
-
 class over_roll(Exception):
     pass 
 
@@ -46,9 +44,13 @@ class Robot:
         self.right_motor = Motor(Port.B)
         self.motor_front = Motor(Port.C)
         self.motor_back = Motor(Port.D)
-        self.drive_base = DriveBase(self.left_motor, self.right_motor,62.4,120)  
+        self.drive_base = DriveBase(self.left_motor, self.right_motor, 62.4, 120)
+        # self.color_sensor = ColorSensor(Port.A)
+        # self.forcesensor = ForceSensor(Port)#.)
         self.drive_base.use_gyro(True)
-        self.emergency_stop = False
+
+        # self.drive_base.use_gyro(True)
+        # self.emergency_stop = False
 
     async def buttery_status(self):
         voltage = self.hub.battery.voltage()
@@ -184,19 +186,20 @@ class Robot:
     
     async def drive_until_pushed(
         self, 
-        speed=750, 
-        timeout_seconds=None):
+        speed=750 
+       ):
         self.drive_base.drive(speed, 0)
-        while not self.forcesensor.pressed():
-            await wait(10)
-        self.drive_base.stop()
-        self.motor_front.stop()
-        self.motor_back.stop()
-        
+        while True:
+            if self.forcesensor.pressed():
+                await wait(10)
+                self.drive_base.stop()
+                self.motor_front.stop()
+                self.motor_back.stop()
+                break
+
     async def drive_until_touched(
         self,
-        speed=750, 
-        timeout_seconds=None):
+        speed=750):
         self.drive_base.drive(speed, 0)
         while not self.forcesensor.touched():
             await wait(10)
@@ -220,9 +223,43 @@ class Robot:
         מתחיל לנסוע קדימה, ואם לוחצים על כפתור FORCE עוצר וחוזר לתפריט.
         """
         self.drive_base.drive(speed, 0)
+    #     while True:
+    #         pressed = self()
+    #         if Button.FORCE in pressed:
+    #             self.drive_base.stop()
+    #             break
+    #         await wait(50)
+            
+    # async def print_force_sensor():
+    #     """
+    #     Prints the force sensor value every second.
+    #     """
+    #     while True:
+    #         print(f"Force: {force_sensor.force()}")
+    #         await wait(1000)
+    # async def drive_until_pressed(self):
+    #     self.drive_base.drive(100, 0)  # נסיעה קדימה במהירות 100 מ"מ לשנייה
+
+    #     # כל עוד החיישן לא נלחץ - המשך לנסוע
+    #     while not force_sensor.pressed():
+    #         await wait(10)  # המתנה קצרה (10 מ"ש)
+
+    #     self.drive_base.stop() 
+    async def print_force_sensor(self):
+        """
+        מדפיסה את ערך חיישן הכוח כל חצי שנייה.
+        """
         while True:
-            pressed = self()
-            if Button.FORCE in pressed:
-                self.drive_base.stop()
-                break
-            await wait(50)
+            print(f"Force: {self.forcesensor.force()}, Pressed: {self.forcesensor.pressed()}, Touched: {self.forcesensor.touched()}")  # ערך הכוח
+            await wait(500)
+    async def run_until_force_press(self, speed=750):
+        self.drive_base.drive(speed, 0)
+        while not await self.forcesensor.pressed():
+            await wait(10)
+        self.drive_base.stop()
+        self.motor_front.stop()
+        self.motor_back.stop()
+    async def detect_color_and_run(self):
+        while True:
+            detected_color = await self.color_sensor.color()
+            print(f"Detected: {detected_color}")
