@@ -4,7 +4,7 @@ from pybricks.robotics import DriveBase
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
-from robot import Robot,time_it,Stop, over_roll
+from robonew import Robot,time_it,Stop, over_roll
 # from pynput import keyboard
 # for ilan
 # check change 
@@ -29,7 +29,8 @@ async def drive():
     """
     תכנית לנסיעה קדימה.
     """  
-    await ilan.drive_base.drive(750, 0)
+    ilan.drive_base.drive(750, 0)
+
 async def reverse_drive():
     """
     תכנית לנסיעה אחורה.
@@ -251,7 +252,8 @@ async def massive():
 
 
 async def test():
-        ilan.drive_base.drive(120, 0)
+
+    await ilan.drive_until_button(500)
 
 
 async def battery_check():
@@ -283,8 +285,9 @@ async def monitor_roll():
                 ilan.motor_front.stop()
                 await stop_all()
                 await wait(100)
+                raise over_roll(f"Roll exceeded: {roll}")  # <--- הוספה כאן
             else:
-                roll_exceeded = False  # איפוס הדגל אם חזר לתחום התקין
+                roll_exceeded = False
         except Exception as e:
             print("Error in monitor_roll:", e)
         await wait(50)
@@ -292,7 +295,6 @@ async def monitor_roll():
     פונקציה המבצעת את כל התכניות
 """
 async def main_loop():
-    # multitask(monitor_roll())
     runs = [
         # --- משימות עיקריות ---
         ("0", battery_check, Icon.TRIANGLE_UP),
@@ -318,7 +320,7 @@ async def main_loop():
         ("4", back_motor_reverse),
 
         # --- בדיקות ופיתוח ---
-        ("T", test, Icon.TRIANGLE_DOWN),
+        ("T", test),
     ]
 
 

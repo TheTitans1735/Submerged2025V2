@@ -6,6 +6,9 @@ from pybricks.robotics import DriveBase
 from pybricks.parameters import Port, Stop, Icon, Color, Button, Direction
 from pybricks.tools import wait, StopWatch
 
+class over_roll(Exception):
+    pass 
+
 class RollExceededException(Exception):
     pass
 
@@ -43,9 +46,7 @@ class Robot:
         self.right_motor = Motor(Port.B)
         self.motor_front = Motor(Port.C)
         self.motor_back = Motor(Port.D)
-        self.drive_base = DriveBase(self.left_motor, self.right_motor, 62.4, 120)
-        self.color_sensor = ColorSensor(Port.A)
-        self.forcesensor = ForceSensor(Port.E)
+        self.drive_base = DriveBase(self.left_motor, self.right_motor,62.4,120)  
         self.drive_base.use_gyro(True)
         self.emergency_stop = False
 
@@ -214,5 +215,14 @@ class Robot:
                 self.drive_base.stop()
                 break
             await wait(50)
-class over_roll(Exception):
-    pass
+    async def drive_until_forcesensor(self, speed=750, timeout_seconds=None):
+        """
+        מתחיל לנסוע קדימה, ואם לוחצים על כפתור FORCE עוצר וחוזר לתפריט.
+        """
+        self.drive_base.drive(speed, 0)
+        while True:
+            pressed = self()
+            if Button.FORCE in pressed:
+                self.drive_base.stop()
+                break
+            await wait(50)

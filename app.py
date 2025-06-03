@@ -132,7 +132,7 @@ async def whale():
     await ilan.turn(-15)
 
 async def sonar():
-    """"
+    """
     פונקציה המבצעת את משימת ההאכילו את הלוויתן ותגלית סונאר.
     """
     await ilan.drive_straight(-30,300)
@@ -283,8 +283,9 @@ async def monitor_roll():
                 ilan.motor_front.stop()
                 await stop_all()
                 await wait(100)
+                raise over_roll(f"Roll exceeded: {roll}")  # <--- הוספה כאן
             else:
-                roll_exceeded = False  # איפוס הדגל אם חזר לתחום התקין
+                roll_exceeded = False
         except Exception as e:
             print("Error in monitor_roll:", e)
         await wait(50)
@@ -292,7 +293,6 @@ async def monitor_roll():
     פונקציה המבצעת את כל התכניות
 """
 async def main_loop():
-    # multitask(monitor_roll())
     runs = [
         # --- משימות עיקריות ---
         ("0", battery_check, Icon.TRIANGLE_UP),

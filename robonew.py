@@ -43,11 +43,11 @@ class Robot:
         self.hub = PrimeHub()
         self.left_motor = Motor(Port.F, Direction.COUNTERCLOCKWISE)
         self.right_motor = Motor(Port.B)
-        self.motor_front = Motor(Port.C)
-        self.motor_back = Motor(Port.D)
+        self.motor_front = Motor(Port.E)
+        self.motor_back = Motor(Port.A)
         self.drive_base = DriveBase(self.left_motor, self.right_motor, 62.4, 120)
-        self.color_sensor = ColorSensor(Port.A)
-        self.forcesensor = ForceSensor(Port.E)
+        self.color_sensor = ColorSensor(Port.C)
+        self.forcesensor = ForceSensor(Port.D)
         self.drive_base.use_gyro(True)
         self.emergency_stop = False
         
@@ -181,29 +181,16 @@ class Robot:
     #             self.motor_front.stop()
     #             return
     #         await wait(100)
-    
-    
-    async def drive_until_pushed(
-        self, 
-        speed=750, 
-        timeout_seconds=None):
-        self.drive_base.drive(speed, 0)
-        while not self.forcesensor.pressed():
-            await wait(10)
-        self.drive_base.stop()
-        self.motor_front.stop()
-        self.motor_back.stop()
-        
-    async def drive_until_touched(
-        self,
-        speed=750, 
-        timeout_seconds=None):
-        self.drive_base.drive(speed, 0)
-        while not self.forcesensor.touched():
-            await wait(10)
-        self.drive_base.stop()
-        self.motor_front.stop()
-        self.motor_back.stop()
+    async def drive_until_button(self):#speed_of_drive=500):
+        # 
+        if  self.forcesensor.pressed():
+            print("Waiting for force sensor to be pressed...")
+        # # Use the already-created self.forcesensor!
+        # while not self.forcesensor.pressed():
+        #     await wait(10)
+        # self.drive_base.stop()
+        # self.motor_front.stop()
+        # self.motor_back.stop()
 
     async def drive_until_bluetooth(self, speed=500):
         """
@@ -216,12 +203,14 @@ class Robot:
                 self.drive_base.stop()
                 break
             await wait(50)
-            
-    async def run_unti_force_perss(self):
-        self.drive_base.drive(500, 0)
+
+    async def run_until_force_press(self, speed=750):
+        """
+        Drives forward until the force sensor is pressed, then stops all motors.
+        """
+        self.drive_base.drive(speed, 0)
         while not self.forcesensor.pressed():
             await wait(10)
-            self.drive_base.stop()
-            self.motor_front.stop()
-            self.motor_back.stop()
-            await wait(10)
+        self.drive_base.stop()
+        self.motor_front.stop()
+        self.motor_back.stop()
