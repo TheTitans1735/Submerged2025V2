@@ -119,6 +119,23 @@
             "env": {
                 "PYTHONUTF8": "1"
             }
-        }
+        },
+        {
+            "name": "app_gili_practice1.py",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pybricksdev",
+            "args": [
+                "run",
+                "ble",
+                "--name",
+                "ilan prime",
+                "app_gili_practice1.py"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONUTF8": "1"
+            }
+        },
     ]
 }

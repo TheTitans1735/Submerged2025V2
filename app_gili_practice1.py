@@ -4,7 +4,8 @@ from pybricks.robotics import DriveBase
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
-from robonew import Robot,time_it,Stop, over_roll
+from robot import Robot,time_it,Stop, over_roll
+    
 # from pynput import keyboard
 # for ilan
 # check change 
@@ -29,8 +30,7 @@ async def drive():
     """
     תכנית לנסיעה קדימה.
     """  
-    ilan.drive_base.drive(750, 0)
-
+    await ilan.drive_base.drive(750, 0)
 async def reverse_drive():
     """
     תכנית לנסיעה אחורה.
@@ -133,7 +133,7 @@ async def whale():
     await ilan.turn(-15)
 
 async def sonar():
-    """"
+    """
     פונקציה המבצעת את משימת ההאכילו את הלוויתן ותגלית סונאר.
     """
     await ilan.drive_straight(-30,300)
@@ -251,14 +251,17 @@ async def massive():
     # await ilan.wait_for_button(debug)
 
 
+            
 async def test():
+    await ilan.detect_color_and_run()
 
-    await ilan.drive_until_touch(150)
 
 async def battery_check():
     pass
 
-
+# async def print_force_sensor():
+#         print(f"press {await forcesensor.pressed(3)}-----------------touch {await forcesensor.touched()}")
+#         await wait(1000)
 # async def monitor_force():
 #     while True:
 #         thouch, press = ilan.()
@@ -269,7 +272,27 @@ async def battery_check():
 #             raise over_roll(f"Roll exceeded: {roll}")
 #         await wait(50)
 
-
+        
+async def monitor_roll():
+    roll_exceeded = False
+    while True:
+        try:
+            pitch, roll = ilan.hub.imu.tilt()
+            if abs(roll) > 50:
+                if not roll_exceeded:
+                    print(f"Roll exceeded: {roll}")
+                    roll_exceeded = True
+                ilan.drive_base.stop()
+                ilan.motor_back.stop()
+                ilan.motor_front.stop()
+                await stop_all()
+                await wait(100)
+                raise over_roll(f"Roll exceeded: {roll}")  # <--- הוספה כאן
+            else:
+                roll_exceeded = False
+        except Exception as e:
+            print("Error in monitor_roll:", e)
+        await wait(50)
 """
     פונקציה המבצעת את כל התכניות
 """
@@ -281,66 +304,13 @@ color_to_function = {
     Color.WHITE: coral,
 }
 async def detect_color_and_run():
-    
     while True:
-        
         detected_color = await ilan.color_sensor.color()
-        print(f"Detected: {detected_color}")  # תמיד מדפיס את הצבע שזוהה
-
-        if detected_color == Color.RED:
-            ilan.hub.display.icon(Icon.TRUE)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await test()
-                    break
-        elif detected_color == Color.GREEN:
-            ilan.hub.display.icon(Icon.FALSE)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await coral()
-                    break
-                
-                
-        elif detected_color == Color.BLUE:
-            ilan.hub.display.icon(Icon.HAPPY)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await crabs()
-                    break
-           
-        elif detected_color == Color.YELLOW:
-            ilan.hub.display.icon(Icon.SAD)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():  
-                    await pick_up()
-                    break
-        elif detected_color == Color.WHITE:
-            ilan.hub.display.icon(Icon.PAUSE)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await coral()
-                    break
-
-        await wait(100)  # המתנה לפני קריאה נוספת
-    
-        
-async def monitor_roll():
-    roll_exceeded = False
-    while True:
-        try:
-            pitch, roll = ilan.hub.imu.tilt()
-            if abs(roll) > 50:
-                if not roll_exceeded:
-                    print(f"Roll exceeded: {roll}")
-                    roll_exceeded = True
-                    await stop_all()
-                return  # יציאה מהלולאה -> הפונקציה מסתיימת
-            else:
-                roll_exceeded = False
-        except Exception as e:
-            print("Error in monitor_roll:", e)
-        await wait(50)
-
+        if detected_color in color_to_function:
+            print(f"Detected: {detected_color}")
+        #     await color_to_function[detected_color]()  # קריאה לפונקציה המתאימה
+        #     break  # אפשר להסיר אם רוצים המשך זיהוי
+        # await wait(100)  # המתנה קצרה לפני קריאה נוספת
 async def main_loop():
     runs = [
         # --- משימות עיקריות ---
@@ -367,7 +337,7 @@ async def main_loop():
         ("4", back_motor_reverse),
 
         # --- בדיקות ופיתוח ---
-        ("T", detect_color_and_run),
+        ("T", test, Icon.TRIANGLE_DOWN),
     ]
 
 
@@ -423,10 +393,13 @@ async def main_loop():
             raise e
         finally:
             await wait(150)
-            
 async def main():
-    while True:
-        await multitask(monitor_roll(), detect_color_and_run())
-
-    
+    #await multitask(monitor_roll(),main_loop(),)
+    debug= True
+    ilan.drive_base.drive(0, 0) 
+    await ilan.wait_for_button(debug)
+    await ilan.drive_straight(150,500)
+    await ilan.wait_for_button(debug)
+    await ilan.right_motor.run_angle(500, 360)
+    await ilan.wait_for_button(debug)
 run_task(main())

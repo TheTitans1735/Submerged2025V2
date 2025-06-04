@@ -4,12 +4,11 @@ from pybricks.pupdevices import Motor, ColorSensor,ForceSensor
 from pybricks.robotics import DriveBase
 from pybricks.parameters import Port, Stop, Icon, Color, Button, Direction
 from pybricks.tools import wait, StopWatch
+class over_roll(Exception):
+    pass 
 
 class RollExceededException(Exception):
     pass
-class over_roll(Exception):
-    pass
-
 
 class PIDController:
     def __init__(self, kp, ki, kd):
@@ -38,20 +37,20 @@ def time_it(func):
     return wrapper
 
 
-
 class Robot:
     def __init__(self):
         self.hub = PrimeHub()
         self.left_motor = Motor(Port.F, Direction.COUNTERCLOCKWISE)
-        self.right_motor = Motor(Port.D)
-        self.motor_front = Motor(Port.E)
-        self.motor_back = Motor(Port.A)
+        self.right_motor = Motor(Port.B)
+        self.motor_front = Motor(Port.C)
+        self.motor_back = Motor(Port.D)
         self.drive_base = DriveBase(self.left_motor, self.right_motor, 62.4, 120)
-        # self.color_sensor = ColorSensor(Port.C)
-        self.force_sensor = ForceSensor(port=Port.B)
+        # self.color_sensor = ColorSensor(Port.A)
+        # self.forcesensor = ForceSensor(Port)#.)
         self.drive_base.use_gyro(True)
-        self.emergency_stop = False
-        self.color_sensor = ColorSensor(Port.C)
+
+        # self.drive_base.use_gyro(True)
+        # self.emergency_stop = False
 
     async def buttery_status(self):
         voltage = self.hub.battery.voltage()
@@ -183,22 +182,31 @@ class Robot:
     #             self.motor_front.stop()
     #             return
     #         await wait(100)
-    async def drive_until_button(self,speed=500):#speed_of_drive=500):
-        # 
+    
+    
+    async def drive_until_pushed(
+        self, 
+        speed=750 
+       ):
         self.drive_base.drive(speed, 0)
-        while not await self.force_sensor.pressed():
+        while True:
+            if self.forcesensor.pressed():
+                await wait(10)
+                self.drive_base.stop()
+                self.motor_front.stop()
+                self.motor_back.stop()
+                break
+
+    async def drive_until_touched(
+        self,
+        speed=750):
+        self.drive_base.drive(speed, 0)
+        while not self.forcesensor.touched():
             await wait(10)
         self.drive_base.stop()
         self.motor_front.stop()
         self.motor_back.stop()
-    async def drive_until_touch(self,speed=500):#speed_of_drive=500):
-        
-        self.drive_base.drive(speed, 0)
-        while not await self.force_sensor.touched():
-            await wait(10)
-        self.drive_base.stop()
-        self.motor_front.stop()
-        self.motor_back.stop()
+
     async def drive_until_bluetooth(self, speed=500):
         """
         מתחיל לנסוע קדימה, ואם לוחצים על כפתור BLUETOOTH עוצר וחוזר לתפריט.
@@ -210,56 +218,48 @@ class Robot:
                 self.drive_base.stop()
                 break
             await wait(50)
-
-    async def run_until_force_press(self, speed=750):
+    async def drive_until_forcesensor(self, speed=750, timeout_seconds=None):
         """
-        Drives forward until the force sensor is pressed, then stops all motors.
+        מתחיל לנסוע קדימה, ואם לוחצים על כפתור FORCE עוצר וחוזר לתפריט.
         """
         self.drive_base.drive(speed, 0)
-        while not self.forcesensor.pressed():
-            await wait(10)
-        self.drive_base.stop()
-        self.motor_front.stop()
-        self.motor_back.stop()
+    #     while True:
+    #         pressed = self()
+    #         if Button.FORCE in pressed:
+    #             self.drive_base.stop()
+    #             break
+    #         await wait(50)
+            
+    # async def print_force_sensor():
+    #     """
+    #     Prints the force sensor value every second.
+    #     """
+    #     while True:
+    #         print(f"Force: {force_sensor.force()}")
+    #         await wait(1000)
+    # async def drive_until_pressed(self):
+    #     self.drive_base.drive(100, 0)  # נסיעה קדימה במהירות 100 מ"מ לשנייה
 
+    #     # כל עוד החיישן לא נלחץ - המשך לנסוע
+    #     while not force_sensor.pressed():
+    #         await wait(10)  # המתנה קצרה (10 מ"ש)
 
-
+    #     self.drive_base.stop() 
     async def print_force_sensor(self):
         """
-        Prints the force sensor value every second.
+        מדפיסה את ערך חיישן הכוח כל חצי שנייה.
         """
         while True:
-            # Read all the information we can get from this sensor.
-            force = self.force_sensor.force()
-            dist = self.force_sensor.distance()
-            press = self.force_sensor.pressed()
-            touch = self.force_sensor.touched()
-
-            # Print the values
-            print("Force", force, "Dist:", dist, "Pressed:", press, "Touched:", touch)
-
-            # Push the sensor button see what happens to the values.
-
-            # Wait some time so we can read what is printed.
-            await wait(200)
-            
+            print(f"Force: {self.forcesensor.force()}, Pressed: {self.forcesensor.pressed()}, Touched: {self.forcesensor.touched()}")  # ערך הכוח
+            await wait(500)
     async def run_until_force_press(self, speed=750):
         self.drive_base.drive(speed, 0)
-        while not await self.force_sensor.pressed():
+        while not await self.forcesensor.pressed():
             await wait(10)
         self.drive_base.stop()
         self.motor_front.stop()
         self.motor_back.stop()
-        
-    async def run_until_force_touched(self, speed=750):
-        self.drive_base.drive(speed, 0)
-        while not await self.force_sensor.touched():
-            await wait(10)
-        self.drive_base.stop()
-        self.motor_front.stop()
-        self.motor_back.stop()
-        
-    # async def detect_color_and_run(self):
-    #     while True:
-    #         detected_color = await self.color_sensor.color()
-    #         print(f"Detected: {detected_color}")
+    async def detect_color_and_run(self):
+        while True:
+            detected_color = await self.color_sensor.color()
+            print(f"Detected: {detected_color}")
