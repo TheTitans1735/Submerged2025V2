@@ -1,12 +1,12 @@
 from pybricks.hubs import PrimeHub
 from pybricks.pupdevices import Motor, ColorSensor, ForceSensor
 from pybricks.robotics import DriveBase
-from pybricks.parameters import Port
+from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
 from robot import Robot,time_it,Stop, over_roll
     
-# from pynput import keyboard
+# from pynput import keyboard 
 # for ilan
 # check change 
 # change 4
@@ -393,13 +393,51 @@ async def main_loop():
             raise e
         finally:
             await wait(150)
+
+async def gili_the_man2():
+    debug = False
+    run= True
+    await ilan.wait_for_button(debug=True)
+    await ilan.drive_straight(10, 100)
+    while run:
+            await ilan.drive_straight(10, 100)
+            detected_color = await sensor.color(surface=True)
+            print(f"Detected color: {detected_color}")
+            if detected_color == Color.BLUE:
+                print("Green detected, I'm done.")
+                run= False
+            await wait(100)
+
+
+async def gili_the_man():
+        debug = False
+        await ilan.drive_straight(30, 500)  # Drive forward 30
+        await ilan.wait_for_button(debug)
+        await ilan.turn(90)  # Turn 90 degrees
+        await ilan.wait_for_button(debug)
+        await ilan.drive_straight(30, 500)  # Drive forward 30 again
+        await ilan.wait_for_button(debug)
+        await ilan.curve(-300, -90, -200, Stop.HOLD)  # Curve backwards to the same spot
+        await ilan.wait_for_button(debug)
+    
+
 async def main():
     #await multitask(monitor_roll(),main_loop(),)
-    debug= True
+    debug= False
     ilan.drive_base.drive(0, 0) 
+    await ilan.wait_for_button(debug=True)
+    await ilan.drive_straight(150,500)  
     await ilan.wait_for_button(debug)
-    await ilan.drive_straight(150,500)
+    await ilan.right_motor.run_angle(500, -360)
     await ilan.wait_for_button(debug)
-    await ilan.right_motor.run_angle(500, 360)
+    await ilan.drive_straight(-30, 500)
     await ilan.wait_for_button(debug)
-run_task(main())
+    await ilan.drive_straight(50, 500)
+    await ilan.wait_for_button(debug)
+    await ilan.curve(-300, 90, -200, Stop.HOLD)
+    await ilan.wait_for_button(debug=True)
+    await ilan.drive_straight(-150, 500)
+    await ilan.wait_for_button(debug)
+    await ilan.detect_color_and_run() 
+sensor = ColorSensor(Port.E)
+run_task(gili_the_man2())

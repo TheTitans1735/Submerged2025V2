@@ -48,7 +48,6 @@ class Robot:
         # self.color_sensor = ColorSensor(Port.A)
         # self.forcesensor = ForceSensor(Port)#.)
         self.drive_base.use_gyro(True)
-
         # self.drive_base.use_gyro(True)
         # self.emergency_stop = False
 
