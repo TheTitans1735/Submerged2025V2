@@ -273,55 +273,80 @@ async def battery_check():
 """
     פונקציה המבצעת את כל התכניות
 """
-color_to_function = {
-    Color.RED: massive,
-    Color.GREEN: green,
-    Color.BLUE: crabs,
-    Color.YELLOW: pick_up,
-    Color.WHITE: coral,
-}
+# color_to_function = {
+#     Color.RED: massive,
+#     Color.GREEN: green,
+#     Color.BLUE: crabs,
+#     Color.YELLOW: pick_up,
+#     Color.WHITE: coral,
+# }
+ilan.colorSensor = ColorSensor(Port.F)
+
+# HSV values were found by testing. Default hsv-values are provided
+# in comments. Theoretically, the farther apart the hsv-values are,
+# the less likely two colors can get "confused"
+# Use the colorTest.py program to get the color sensor values
+WHITE = ColorSensor.hsv(h=0, s=0, v=100)  # h=0,s=0,v=100
+RED = ColorSensor.hsv(h=353, s=82, v=92)  # h=0,s=100,v=100
+YELLOW = ColorSensor.hsv(h=60, s=60, v=100)  # h=60,s=100,v=100
+GREEN  = ColorSensor.hsv(h=156, s=66, v=66)  # h=120,s=100,v=100
+BLUE= ColorSensor.hsv(h=216, s=84, v=83)  # h=240,s=100,v=100
+MAGENTA= ColorSensor.hsv(h=333, s=75, v=78)  # h=300,s=100,v=100
+ORANGE = ColorSensor.hsv(h=8, s=75, v=100)  # h=30,s=100,v=100
+DARKGREY = ColorSensor.hsv(h=192, s=21, v=64)  # h=0,s=0,v=50
+BLACK = ColorSensor.hsv(h=170, s=26, v=15)  # h=0,s=0,v=0
+LIME = ColorSensor.hsv(h=92, s=55, v=93)  # h=92, s=57, v=93
+
+ilan.color_sensor.
+
+# Set the detectable colors usisng our list
 async def detect_color_and_run():
     
     while True:
+        # detected_color = await ilan.color_sensor.hsv()
+        # if detected_color in color_to_function:
+            print(await ilan.color_sensor.color(surface=True))  # תמיד מדפיס את הצבע שזוהה}")
+            await wait(1000)  # המתנה לפני קריאה נוספת
+    # while True:
         
-        detected_color = await ilan.color_sensor.color()
-        print(f"Detected: {detected_color}")  # תמיד מדפיס את הצבע שזוהה
+    #     detected_color = await ilan.color_sensor.color()
+    #     print(f"Detected: {detected_color}")  # תמיד מדפיס את הצבע שזוהה
 
-        if detected_color == Color.RED:
-            ilan.hub.display.icon(Icon.TRUE)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await test()
-                    break
-        elif detected_color == Color.GREEN:
-            ilan.hub.display.icon(Icon.FALSE)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await coral()
-                    break
+    #     if detected_color == Color.RED:
+    #         ilan.hub.display.icon(Icon.TRUE)
+    #         while True:
+    #             if Button.BLUETOOTH in ilan.hub.buttons.pressed():
+    #                 await test()
+    #                 break
+    #     elif detected_color == Color.GREEN:
+    #         ilan.hub.display.icon(Icon.FALSE)
+    #         while True:
+    #             if Button.BLUETOOTH in ilan.hub.buttons.pressed():
+    #                 await coral()
+    #                 break
                 
                 
-        elif detected_color == Color.BLUE:
-            ilan.hub.display.icon(Icon.HAPPY)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await crabs()
-                    break
+    #     elif detected_color == Color.BLUE:
+    #         ilan.hub.display.icon(Icon.HAPPY)
+    #         while True:
+    #             if Button.BLUETOOTH in ilan.hub.buttons.pressed():
+    #                 await crabs()
+    #                 break
            
-        elif detected_color == Color.YELLOW:
-            ilan.hub.display.icon(Icon.SAD)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():  
-                    await pick_up()
-                    break
-        elif detected_color == Color.WHITE:
-            ilan.hub.display.icon(Icon.PAUSE)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await coral()
-                    break
+    #     elif detected_color == Color.YELLOW:
+    #         ilan.hub.display.icon(Icon.SAD)
+    #         while True:
+    #             if Button.BLUETOOTH in ilan.hub.buttons.pressed():  
+    #                 await pick_up()
+    #                 break
+    #     elif detected_color == Color.WHITE:
+    #         ilan.hub.display.icon(Icon.PAUSE)
+    #         while True:
+    #             if Button.BLUETOOTH in ilan.hub.buttons.pressed():
+    #                 await coral()
+    #                 break
 
-        await wait(100)  # המתנה לפני קריאה נוספת
+    #     await wait(100)  # המתנה לפני קריאה נוספת
     
         
 async def monitor_roll():
