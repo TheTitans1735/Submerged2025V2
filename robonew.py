@@ -4,6 +4,7 @@ from pybricks.pupdevices import Motor, ColorSensor,ForceSensor
 from pybricks.robotics import DriveBase
 from pybricks.parameters import Port, Stop, Icon, Color, Button, Direction
 from pybricks.tools import wait, StopWatch
+from pybricks.iodevices import XboxController
 
 class RollExceededException(Exception):
     pass
@@ -38,6 +39,42 @@ def time_it(func):
     return wrapper
 
 
+class color:
+    BLACK = "black"
+    GRAY = "gray"
+    BLUE = "blue"
+    LIGHT_BLUE = "light_blue"
+    LIGHT_GREEN = "light_green"
+    LIGHT_PURPLE = "light_purple"
+    ORANGE = "orange"
+    MUSTARD = "mustard"
+    UNKNOWN = "unknown"
+
+    GRAY = "gray"
+    @staticmethod
+    def detect(self, h, s, v):
+        if v < 15:
+            return color.BLACK
+        
+
+        if 180 <= h <= 210 and s > 40 and v > 60:
+            return color.LIGHT_BLUE
+        elif 210 <= h <= 250 and s > 40:
+            return color.BLUE
+
+        elif 70 <= h <= 95 and s > 40 and v > 60:
+            return color.LIGHT_GREEN
+
+        elif 260 <= h <= 290 and s > 30 and v > 60:
+            return color.LIGHT_PURPLE
+
+        elif 20 <= h <= 35 and s > 50 and v > 50:
+            return color.ORANGE
+
+        elif 40 <= h <= 60 and s > 50 and v > 50:
+            return color.MUSTARD
+
+        return color.UNKNOWN
 
 class Robot:
     def __init__(self):
@@ -52,6 +89,9 @@ class Robot:
         self.drive_base.use_gyro(True)
         self.emergency_stop = False
         self.color_sensor = ColorSensor(Port.C)
+
+
+# נוסע כל הזמן עד שמזהה צבע קסטום (לא UNKNOWN)
 
     async def buttery_status(self):
         voltage = self.hub.battery.voltage()
@@ -263,3 +303,4 @@ class Robot:
     #     while True:
     #         detected_color = await self.color_sensor.color()
     #         print(f"Detected: {detected_color}")
+    

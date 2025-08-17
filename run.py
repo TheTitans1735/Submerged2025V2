@@ -4,7 +4,7 @@ from pybricks.robotics import DriveBase
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch, run_task, multitask
 from pybricks.parameters import Icon, Color, Button, Direction
-from robonew import Robot,time_it,Stop, over_roll
+from robonew import Robot,time_it,Stop, over_roll, color
 # from pynput import keyboard
 # for ilan
 # check change 
@@ -285,28 +285,28 @@ async def battery_check():
 # Set the detectable colors usisng our list
     
 async def detect_color_and_run():
-    
     while True:
-        
-        detected_color = await ilan.color_sensor.color()
-        print(f"Detected: {detected_color}")  # תמיד מדפיס את הצבע שזוהה
+        hsv = await ilan.color_sensor.hsv(surface=True)
+        print("HSV:", hsv )  # עוזר לדיבוג
+        # בדיקה: האם hsv הוא tuple/list עם 3 ערכים?
+        if not isinstance(hsv, (tuple, list)) or len(hsv) != 3:
+            print("X")
+            await wait(500)
+            continue
+        h, s, v = hsv
+        detected_color = await ilan.color_sensor.hsv(h, s, v)
+        print(f"Detected: {detected_color} (h={h}, s={s}, v={v})")
+        await wait(100)
 
-        if detected_color == Color.RED:
-            ilan.hub.display.icon(Icon.TRUE)
+        if detected_color == color.LIGHT_BLUE:
+            ilan.hub.display.icon(Icon.TRIANGLE_LEFT)
             while True:
                 if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await test()
+                    # כאן תפעיל פונקציה מתאימה
                     break
-        elif detected_color == Color.GREEN:
-            ilan.hub.display.icon(Icon.FALSE)
-            while True:
-                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
-                    await coral()
-                    break
-                
-                
-        elif detected_color == Color.BLUE:
-            ilan.hub.display.icon(Icon.HAPPY)
+
+        elif detected_color == color.GRAY:
+            ilan.hub.display.icon(Icon.SQUARE)
             while True:
                 if Button.BLUETOOTH in ilan.hub.buttons.pressed():
                     await crabs()
@@ -325,8 +325,14 @@ async def detect_color_and_run():
                     await coral()
                     break
 
-    
-        
+        elif detected_color == color.LIGHT_BLUE:
+            ilan.hub.display.icon(Icon.TRIANGLE_LEFT)
+            while True:
+                if Button.BLUETOOTH in ilan.hub.buttons.pressed():
+                    await color()
+                    break
+
+
 async def monitor_roll():
     roll_exceeded = False
     while True:
@@ -427,37 +433,10 @@ async def main_loop():
         finally:
             await wait(150)
 
-async def detect_custom_color(h, s, v):
-    if v < 15:
-        return "שחור"
-    elif s < 20 and v < 80:
-        return "אפור"
 
-    if 180 <= h <= 210 and s > 40 and v > 60:
-        return "כחול בהיר"
-    elif 210 <= h <= 250 and s > 40:
-        return "כחול"
-
-    elif 70 <= h <= 95 and s > 40 and v > 60:
-        return "ירוק בהיר"
-    
-    elif 260 <= h <= 290 and s > 30 and v > 60:
-        return "סגול בהיר"
-    
-    elif 20 <= h <= 35 and s > 50 and v > 50:
-        return "כתום"
-
-    elif 40 <= h <= 60 and s > 50 and v > 50:
-        return "חרדל"
-
-    return "לא מזוהה"
 async def main():
-    # while True:
-    #     await multitask(monitor_roll(), detect_color_and_run())
-
     while True:
-        h, s, v = await ilan.color_sensor.hsv()
-        color = await detect_custom_color(h, s, v)
-        print("צבע מזוהה:", color)
-        await wait(500)
+        await multitask(monitor_roll(), detect_color_and_run())
+
+
 run_task(main())
