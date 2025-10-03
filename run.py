@@ -181,6 +181,7 @@ async def crabs():
 async def green():
     """
     מבצע את משימת אוצרו של הקראקן, הרימו תורן, שונית האלמוגים ותליית הצוללן"
+    .
     """
     Debug = False
     await ilan.turn(23,100)
@@ -253,8 +254,26 @@ async def massive():
 
 async def test():
 
-    await ilan.drive_until_touch(150)
+    
+    await ilan.turn(-5)
+    await ilan.drive_straight(55,700)
+    await ilan.wait_for_button()
+    await ilan.turn(65)
+    await ilan.drive_straight(8,700)
+    await ilan.wait_for_button()
+    await ilan.run_front_motor(700,-360)
+    await ilan.wait_for_button()
+    await ilan.run_front_motor(700,360)
+    await ilan.drive_straight(-1.5,300)
+    await ilan.turn(-20)
+    # await ilan.drive_straight(16,500)
+    # # await ilan.wait_for_button()
+    # await ilan.run_front_motor(-700,180)
+    # await wait(100)
+    # await ilan.turn(-20)
 
+async def test2():
+    await ilan.run_front_motor(-360,-760)
 async def battery_check():
     pass
 
@@ -349,7 +368,8 @@ async def monitor_roll():
         except Exception as e:
             print("Error in monitor_roll:", e)
         await wait(50)
-
+    
+ilan.drive_straight(distance_cm=10, target_speed=200)
 async def main_loop():
     runs = [
         # --- משימות עיקריות ---
@@ -373,10 +393,10 @@ async def main_loop():
         ("1", front_motor),
         ("2", back_motor),
         ("3", front_motor_reverse),
-        ("4", back_motor_reverse),
+        ("4", test2),
 
         # --- בדיקות ופיתוח ---
-        ("T", detect_color_and_run),
+        ("T", test),
     ]
 
 
@@ -436,7 +456,7 @@ async def main_loop():
 
 async def main():
     while True:
-        await multitask(monitor_roll(), detect_color_and_run())
+        await multitask(main_loop())
 
 
 run_task(main())

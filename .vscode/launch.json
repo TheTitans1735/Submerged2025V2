@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "app.py(ilan)",
+            "name": "run.py(ilan)",
             "type": "debugpy",
             "request": "launch",
             "module": "pybricksdev",
@@ -11,7 +11,7 @@
                 "ble",
                 "--name",
                 "ilan prime",
-                "app.py"
+                "run.py"
             ],
             "console": "integratedTerminal",
             "env": {
